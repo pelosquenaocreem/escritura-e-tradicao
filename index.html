@@ -41,7 +41,7 @@
             text-align: center;
             padding: 30px 0 20px;
             border-bottom: 2px solid var(--accent-gold);
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         h1 {
@@ -57,6 +57,37 @@
             font-style: italic;
             font-size: 1.2rem;
             color: var(--text-muted);
+        }
+
+        .bible-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            background: var(--bg-card);
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .selector-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Cinzel', serif;
+            color: var(--primary-burgundy);
+            font-weight: bold;
+        }
+
+        select {
+            padding: 8px 12px;
+            border: 1px solid var(--accent-gold-light);
+            background: #FFF;
+            font-family: 'Proza Libre', serif;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            border-radius: 4px;
+            cursor: pointer;
         }
 
         .bible-card {
@@ -214,7 +245,17 @@
             background: rgba(184, 134, 11, 0.05);
         }
 
+        .loading-text {
+            text-align: center;
+            font-style: italic;
+            color: var(--text-muted);
+            padding: 20px;
+        }
+
         @media (max-width: 600px) {
+            .bible-selector {
+                flex-direction: column;
+            }
             .tabs-nav {
                 flex-direction: column;
             }
@@ -233,18 +274,36 @@
             <div class="subtitle">Leitura Sagrada à Luz do Magistério e da Tradição Católica</div>
         </header>
 
+        <div class="bible-selector">
+            <div class="selector-group">
+                <label for="book-select">Livro:</label>
+                <select id="book-select" onchange="fetchChapterFromSupabase()">
+                    <option value="genesis">Gênesis</option>
+                    <option value="exodo">Êxodo</option>
+                    <option value="mateus">São Mateus</option>
+                    <option value="joao">São João</option>
+                </select>
+            </div>
+            <div class="selector-group">
+                <label for="chapter-select">Capítulo:</label>
+                <select id="chapter-select" onchange="fetchChapterFromSupabase()">
+                    <option value="1">Capítulo 1</option>
+                    <option value="2">Capítulo 2</option>
+                </select>
+            </div>
+        </div>
+
         <main>
             <article class="bible-card">
-                <h2 class="chapter-title">Gênesis — Capítulo 1</h2>
+                <h2 class="chapter-title" id="display-title">Carregando capítulo...</h2>
                 
-                <div class="sacred-image-frame">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Creation_of_Light_by_Gustave_Dor%C3%A9.jpg/640px-Creation_of_Light_by_Gustave_Dor%C3%A9.jpg" alt="A Criação da Luz - Gustave Doré">
-                    <div class="image-caption">"E Deus disse: Faça-se a luz. E a luz foi feita." (Gravura de Gustave Doré)</div>
+                <div class="sacred-image-frame" id="image-frame" style="display:none;">
+                    <img id="display-image" src="" alt="Arte Sacra">
+                    <div class="image-caption" id="display-caption"></div>
                 </div>
 
-                <div class="bible-text">
-                    <p><span class="verse-num">1</span> No princípio, Deus criou o céu e a terra. <span class="verse-num">2</span> A terra estava deserta e vazia, as trevas cobriam o abismo e o Espírito de Deus pairava sobre as águas.</p>
-                    <p><span class="verse-num">3</span> Deus disse: "Faça-se a luz!" E a luz foi feita. <span class="verse-num">4</span> Deus viu que a luz era boa, e separou a luz das trevas. <span class="verse-num">5</span> Deus chamou à luz "dia" e às trevas "noite". Houve uma tarde e uma manhã: primeiro dia.</p>
+                <div class="bible-text" id="display-text">
+                    <p class="loading-text">Carregando texto do banco de dados...</p>
                 </div>
             </article>
 
@@ -265,51 +324,27 @@
                     </div>
 
                     <div id="tab-historico" class="tab-pane active">
-                        <div class="commentary-body">
-                            <h3>Contexto Histórico e Lingüístico</h3>
-                            <p>O livro do Gênesis, denominado no cânone hebraico como <em>Bereshit</em> ("No princípio"), insere-se no contexto sociocultural do Antigo Oriente Próximo. Para compreender a novidade da Revelação divina registrada por Moisés, é preciso contrastá-la com as cosmogônias mesopotâmicas e egípcias contemporâneas, como o poema babilônico <em>Enuma Elish</em>.</p>
-                            <p>Nas narrativas pagãs da época, o universo surgia a partir do caos primordial, de conflitos sangrentos entre divindades caprichosas e da violência. Em contrapartida, a narrativa do Gênesis introduz uma revolução teológica absoluta: a criação <em>ex nihilo</em> (a partir do nada), realizada por um único Deus soberano, transcendente e sumamente bom.</p>
-                        </div>
+                        <div class="commentary-body" id="text-historico">Carregando...</div>
                     </div>
 
                     <div id="tab-vulgata" class="tab-pane">
-                        <div class="commentary-body">
-                            <h3>Exegese da Vulgata Latina & Traditores</h3>
-                            <p>Na Vulgata Clementina, a tradução do primeiro versículo lê-se: <em>In principio creavit Deus caelum et terram</em>. São Jerônimo, ao debruçar-se sobre os manuscritos hebraicos nas suas <em>Quaestiones Hebraicae in Genesim</em>, observa uma particularidade gramatical profunda: enquanto o substantivo divino <em>Elohim</em> possui uma terminação plural, o verbo <em>creavit</em> encontra-se rigorosamente no singular. Para os exegetas clássicos, essa concordância gramatical revela veladamente a unidade da essência divina aliada à pluralidade das Pessoas Divinas.</p>
-                        </div>
+                        <div class="commentary-body" id="text-vulgata">Carregando...</div>
                     </div>
 
                     <div id="tab-padres" class="tab-pane">
-                        <div class="commentary-body">
-                            <h3>Patrística (A Leitura dos Santos Padres)</h3>
-                            <p><strong>Santo Agostinho (De Genesi ad litteram):</strong> O Doutor da Graça ensina que Deus criou todas as coisas simultaneamente em suas razões seminais, e que a divisão em seis dias é uma acomodação pedagógica para a mente humana.</p>
-                            <p><strong>São Basílio Magno (Homilias sobre o Hexaemeron):</strong> Destaca o poder imperativo do <em>Fiat</em>. A Palavra de Deus não é um som passageiro, mas uma força viva que permanece na natureza conferindo-lhe ordem e fertilidade.</p>
-                        </div>
+                        <div class="commentary-body" id="text-padres">Carregando...</div>
                     </div>
 
                     <div id="tab-catecismo" class="tab-pane">
-                        <div class="commentary-body">
-                            <h3>Catecismo da Igreja Católica (CIC)</h3>
-                            <p><strong>CIC §290-292:</strong> A criação é a obra comum da Santíssima Trindade. O Pai cria pelo Verbo (o Filho) no Amor (o Espírito Santo). A Igreja professa um só Deus que é Criador de todas as coisas visíveis e invisíveis.</p>
-                            <p><strong>CIC §293-294:</strong> O mundo não foi criado por necessidade, por cobiça ou por acaso, mas para manifestar e comunicar a glória e a bondade de Deus.</p>
-                        </div>
+                        <div class="commentary-body" id="text-catecismo">Carregando...</div>
                     </div>
 
                     <div id="tab-nt" class="tab-pane">
-                        <div class="commentary-body">
-                            <h3>Tipologia e o Novo Testamento</h3>
-                            <p>Gênesis 1 encontra a sua correspondência direta no <strong>Evangelho segundo São João (Jo 1,1-5)</strong>. Onde Moisés escreve "No princípio, Deus criou", São João retoma "No princípio era o Verbo". O Verbo Divino é a Luz verdadeira que ilumina todo homem.</p>
-                        </div>
+                        <div class="commentary-body" id="text-nt">Carregando...</div>
                     </div>
 
                     <div id="tab-reflexao" class="tab-pane">
-                        <div class="commentary-body">
-                            <h3>Reflexões para a Vida</h3>
-                            <p>Ao contemplar o grandioso pórtico do Livro Sagrado, a alma crente não deve deter-se em curiosidades estéreis, mas prostrar-se em adoração. <strong>Jesus Cristo é a Régua, a Medida, o Arquétipo e a Razão de existir de absolutamente tudo o que há.</strong></p>
-                            <div class="quote-box">
-                                "O universo não surgiu de um acidente caótico nem a sua vida é fruto do acaso. A medida da sua dignidade não é dada pelas opiniões do mundo; a régua da sua vida é a estatura do próprio Cristo Jesus."
-                            </div>
-                        </div>
+                        <div class="commentary-body" id="text-reflexao">Carregando...</div>
                     </div>
 
                 </div>
@@ -318,6 +353,56 @@
     </div>
 
     <script>
+        // Configuração da API do Supabase
+        const SUPABASE_URL = 'https://mvjezxxrjgmxnfhjbxno.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_I70LXUn1wwHmkEZkxtbMig_-nBbvb7O'; // Insira sua chave publishable aqui
+
+        async function fetchChapterFromSupabase() {
+            const book = document.getElementById('book-select').value;
+            const chapter = document.getElementById('chapter-select').value;
+
+            document.getElementById('display-title').textContent = 'Carregando...';
+            document.getElementById('display-text').innerHTML = '<p class="loading-text">Carregando capítulo do banco de dados...</p>';
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/capitulos?livro=eq.${book}&capitulo=eq.${chapter}&select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data && data.length > 0) {
+                    const cap = data[0];
+                    document.getElementById('display-title').textContent = cap.titulo_capitulo;
+                    document.getElementById('display-text').innerHTML = cap.texto_biblico;
+                    
+                    if (cap.imagem_url) {
+                        document.getElementById('display-image').src = cap.imagem_url;
+                        document.getElementById('display-caption').textContent = cap.imagem_legenda || '';
+                        document.getElementById('image-frame').style.display = 'block';
+                    } else {
+                        document.getElementById('image-frame').style.display = 'none';
+                    }
+
+                    document.getElementById('text-historico').innerHTML = cap.contexto_historico;
+                    document.getElementById('text-vulgata').innerHTML = cap.comentarios_vulgata;
+                    document.getElementById('text-padres').innerHTML = cap.santos_padres;
+                    document.getElementById('text-catecismo').innerHTML = cap.catecismo;
+                    document.getElementById('text-nt').innerHTML = cap.novo_testamento;
+                    document.getElementById('text-reflexao').innerHTML = cap.reflexoes_vida;
+                } else {
+                    document.getElementById('display-title').textContent = 'Capítulo não encontrado';
+                    document.getElementById('display-text').innerHTML = '<p class="loading-text">Este capítulo ainda não foi adicionado ao banco de dados.</p>';
+                }
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+                document.getElementById('display-title').textContent = 'Erro ao carregar';
+            }
+        }
+
         function toggleAccordion() {
             const content = document.getElementById('accordion-content');
             const icon = document.getElementById('accordion-icon');
@@ -344,6 +429,9 @@
             document.getElementById(tabId).classList.add('active');
             evt.currentTarget.classList.add('active');
         }
+
+        // Carrega o capítulo inicial assim que a página abre
+        window.onload = fetchChapterFromSupabase;
     </script>
 </body>
 </html>
