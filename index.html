@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escritura & Tradição — Bíblia Católica Comentada</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Proza+Libre:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-parchment: #F6F1E5;
+            --bg-card: #FCF8F2;
+            --primary-burgundy: #6B1D2F;
+            --primary-burgundy-hover: #521523;
+            --accent-gold: #B8860B;
+            --accent-gold-light: #DFBA62;
+            --text-dark: #2A2421;
+            --text-muted: #5C524B;
+            --border-color: #E2D7C3;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-parchment);
+            color: var(--text-dark);
+            font-family: 'Proza Libre', Georgia, serif;
+            line-height: 1.8;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0 20px;
+            border-bottom: 2px solid var(--accent-gold);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--primary-burgundy);
+            font-size: 2.2rem;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+        }
+
+        .bible-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 35px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            margin-bottom: 30px;
+        }
+
+        .chapter-title {
+            font-family: 'Cinzel', serif;
+            color: var(--primary-burgundy);
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+        }
+
+        .sacred-image-frame {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 10px;
+            border: 1px solid var(--accent-gold-light);
+            background: #FFF;
+        }
+
+        .sacred-image-frame img {
+            max-width: 100%;
+            height: auto;
+            max-height: 400px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .image-caption {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        .bible-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem;
+            text-align: justify;
+        }
+
+        .verse-num {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--primary-burgundy);
+            vertical-align: super;
+            margin-right: 3px;
+            font-family: 'Cinzel', serif;
+        }
+
+        .accordion-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+        }
+
+        .accordion-header {
+            background: var(--primary-burgundy);
+            color: #FFF;
+            padding: 18px 25px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            transition: background 0.3s;
+        }
+
+        .accordion-header:hover {
+            background: var(--primary-burgundy-hover);
+        }
+
+        .accordion-content {
+            padding: 25px;
+            display: block;
+        }
+
+        .accordion-content.hidden {
+            display: none;
+        }
+
+        .tabs-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-radius: 4px;
+            color: var(--text-dark);
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-gold);
+            color: var(--primary-burgundy);
+        }
+
+        .tab-btn.active {
+            background: var(--primary-burgundy);
+            color: #FFF;
+            border-color: var(--primary-burgundy);
+        }
+
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .commentary-body {
+            font-size: 1.05rem;
+            color: var(--text-dark);
+        }
+
+        .commentary-body p {
+            margin-bottom: 15px;
+        }
+
+        .quote-box {
+            border-left: 3px solid var(--accent-gold);
+            padding: 10px 15px;
+            margin: 15px 0;
+            font-style: italic;
+            color: var(--text-muted);
+            background: rgba(184, 134, 11, 0.05);
+        }
+
+        @media (max-width: 600px) {
+            .tabs-nav {
+                flex-direction: column;
+            }
+            .tab-btn {
+                width: 100%;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>ESCRITURA & TRADIÇÃO</h1>
+            <div class="subtitle">Leitura Sagrada à Luz do Magistério e da Tradição Católica</div>
+        </header>
+
+        <main>
+            <article class="bible-card">
+                <h2 class="chapter-title">Gênesis — Capítulo 1</h2>
+                
+                <div class="sacred-image-frame">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Creation_of_Light_by_Gustave_Dor%C3%A9.jpg/640px-Creation_of_Light_by_Gustave_Dor%C3%A9.jpg" alt="A Criação da Luz - Gustave Doré">
+                    <div class="image-caption">"E Deus disse: Faça-se a luz. E a luz foi feita." (Gravura de Gustave Doré)</div>
+                </div>
+
+                <div class="bible-text">
+                    <p><span class="verse-num">1</span> No princípio, Deus criou o céu e a terra. <span class="verse-num">2</span> A terra estava deserta e vazia, as trevas cobriam o abismo e o Espírito de Deus pairava sobre as águas.</p>
+                    <p><span class="verse-num">3</span> Deus disse: "Faça-se a luz!" E a luz foi feita. <span class="verse-num">4</span> Deus viu que a luz era boa, e separou a luz das trevas. <span class="verse-num">5</span> Deus chamou à luz "dia" e às trevas "noite". Houve uma tarde e uma manhã: primeiro dia.</p>
+                </div>
+            </article>
+
+            <section class="accordion-section">
+                <div class="accordion-header" onclick="toggleAccordion()">
+                    <span>COMENTÁRIO TEOLÓGICO E EXEGÉTICO</span>
+                    <span id="accordion-icon">▲</span>
+                </div>
+
+                <div class="accordion-content" id="accordion-content">
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" onclick="openTab(event, 'tab-historico')">Contexto Histórico</button>
+                        <button class="tab-btn" onclick="openTab(event, 'tab-vulgata')">Comentários da Vulgata</button>
+                        <button class="tab-btn" onclick="openTab(event, 'tab-padres')">Santos Padres</button>
+                        <button class="tab-btn" onclick="openTab(event, 'tab-catecismo')">Catecismo (CIC)</button>
+                        <button class="tab-btn" onclick="openTab(event, 'tab-nt')">Novo Testamento</button>
+                        <button class="tab-btn" onclick="openTab(event, 'tab-reflexao')">Reflexões para a Vida</button>
+                    </div>
+
+                    <div id="tab-historico" class="tab-pane active">
+                        <div class="commentary-body">
+                            <h3>Contexto Histórico e Lingüístico</h3>
+                            <p>O livro do Gênesis, denominado no cânone hebraico como <em>Bereshit</em> ("No princípio"), insere-se no contexto sociocultural do Antigo Oriente Próximo. Para compreender a novidade da Revelação divina registrada por Moisés, é preciso contrastá-la com as cosmogônias mesopotâmicas e egípcias contemporâneas, como o poema babilônico <em>Enuma Elish</em>.</p>
+                            <p>Nas narrativas pagãs da época, o universo surgia a partir do caos primordial, de conflitos sangrentos entre divindades caprichosas e da violência. Em contrapartida, a narrativa do Gênesis introduz uma revolução teológica absoluta: a criação <em>ex nihilo</em> (a partir do nada), realizada por um único Deus soberano, transcendente e sumamente bom.</p>
+                        </div>
+                    </div>
+
+                    <div id="tab-vulgata" class="tab-pane">
+                        <div class="commentary-body">
+                            <h3>Exegese da Vulgata Latina & Traditores</h3>
+                            <p>Na Vulgata Clementina, a tradução do primeiro versículo lê-se: <em>In principio creavit Deus caelum et terram</em>. São Jerônimo, ao debruçar-se sobre os manuscritos hebraicos nas suas <em>Quaestiones Hebraicae in Genesim</em>, observa uma particularidade gramatical profunda: enquanto o substantivo divino <em>Elohim</em> possui uma terminação plural, o verbo <em>creavit</em> encontra-se rigorosamente no singular. Para os exegetas clássicos, essa concordância gramatical revela veladamente a unidade da essência divina aliada à pluralidade das Pessoas Divinas.</p>
+                        </div>
+                    </div>
+
+                    <div id="tab-padres" class="tab-pane">
+                        <div class="commentary-body">
+                            <h3>Patrística (A Leitura dos Santos Padres)</h3>
+                            <p><strong>Santo Agostinho (De Genesi ad litteram):</strong> O Doutor da Graça ensina que Deus criou todas as coisas simultaneamente em suas razões seminais, e que a divisão em seis dias é uma acomodação pedagógica para a mente humana.</p>
+                            <p><strong>São Basílio Magno (Homilias sobre o Hexaemeron):</strong> Destaca o poder imperativo do <em>Fiat</em>. A Palavra de Deus não é um som passageiro, mas uma força viva que permanece na natureza conferindo-lhe ordem e fertilidade.</p>
+                        </div>
+                    </div>
+
+                    <div id="tab-catecismo" class="tab-pane">
+                        <div class="commentary-body">
+                            <h3>Catecismo da Igreja Católica (CIC)</h3>
+                            <p><strong>CIC §290-292:</strong> A criação é a obra comum da Santíssima Trindade. O Pai cria pelo Verbo (o Filho) no Amor (o Espírito Santo). A Igreja professa um só Deus que é Criador de todas as coisas visíveis e invisíveis.</p>
+                            <p><strong>CIC §293-294:</strong> O mundo não foi criado por necessidade, por cobiça ou por acaso, mas para manifestar e comunicar a glória e a bondade de Deus.</p>
+                        </div>
+                    </div>
+
+                    <div id="tab-nt" class="tab-pane">
+                        <div class="commentary-body">
+                            <h3>Tipologia e o Novo Testamento</h3>
+                            <p>Gênesis 1 encontra a sua correspondência direta no <strong>Evangelho segundo São João (Jo 1,1-5)</strong>. Onde Moisés escreve "No princípio, Deus criou", São João retoma "No princípio era o Verbo". O Verbo Divino é a Luz verdadeira que ilumina todo homem.</p>
+                        </div>
+                    </div>
+
+                    <div id="tab-reflexao" class="tab-pane">
+                        <div class="commentary-body">
+                            <h3>Reflexões para a Vida</h3>
+                            <p>Ao contemplar o grandioso pórtico do Livro Sagrado, a alma crente não deve deter-se em curiosidades estéreis, mas prostrar-se em adoração. <strong>Jesus Cristo é a Régua, a Medida, o Arquétipo e a Razão de existir de absolutamente tudo o que há.</strong></p>
+                            <div class="quote-box">
+                                "O universo não surgiu de um acidente caótico nem a sua vida é fruto do acaso. A medida da sua dignidade não é dada pelas opiniões do mundo; a régua da sua vida é a estatura do próprio Cristo Jesus."
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function toggleAccordion() {
+            const content = document.getElementById('accordion-content');
+            const icon = document.getElementById('accordion-icon');
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.textContent = '▲';
+            } else {
+                content.classList.add('hidden');
+                icon.textContent = '▼';
+            }
+        }
+
+        function openTab(evt, tabId) {
+            const panes = document.getElementsByClassName('tab-pane');
+            for (let i = 0; i < panes.length; i++) {
+                panes[i].classList.remove('active');
+            }
+
+            const buttons = document.getElementsByClassName('tab-btn');
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>
