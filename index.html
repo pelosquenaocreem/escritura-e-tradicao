@@ -211,6 +211,11 @@
         }
 
         .loading-text { text-align: center; font-style: italic; color: var(--text-muted); padding: 20px; }
+
+        @media (max-width: 600px) {
+            .tabs-nav { flex-direction: column; }
+            .tab-btn { width: 100%; text-align: center; }
+        }
     </style>
 </head>
 <body>
@@ -302,7 +307,9 @@
         }
 
         async function fetchChapterFromSupabase() {
-            const book = document.getElementById('book-select').value;
+            // Normaliza o texto do select para minúsculo e sem acentos antes de fazer o fetch
+            let rawBook = document.getElementById('book-select').value;
+            let book = rawBook.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             const chapter = document.getElementById('chapter-select').value;
 
             document.getElementById('display-title').textContent = 'Carregando...';
