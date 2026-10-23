@@ -284,7 +284,8 @@
 
     <script>
         const SUPABASE_URL = 'https://mvjezxxrjgmxnfhjbxno.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_I70LXUn1wwHmkEZkxtbMig_-nBbvb70';
+        // Chave com permissão de leitura autenticada
+        const SUPABASE_KEY = 'sb_secret_dDRs8GVZCP08luaZACOryA_E4ljo_0o';
 
         const bookChapters = {
             'genesis': 50
@@ -307,7 +308,6 @@
         }
 
         async function fetchChapterFromSupabase() {
-            // Normaliza o texto do select para minúsculo e sem acentos antes de fazer o fetch
             let rawBook = document.getElementById('book-select').value;
             let book = rawBook.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             const chapter = document.getElementById('chapter-select').value;
@@ -321,6 +321,10 @@
                         'Authorization': `Bearer ${SUPABASE_KEY}`
                     }
                 });
+
+                if (!response.ok) {
+                    throw new Error(`Erro na API: ${response.status}`);
+                }
 
                 const data = await response.json();
 
@@ -350,7 +354,7 @@
                 }
             } catch (error) {
                 console.error('Erro ao buscar dados:', error);
-                document.getElementById('display-title').textContent = 'Erro ao carregar';
+                document.getElementById('display-title').textContent = 'Erro de Autorização / Conexão';
             }
         }
 
