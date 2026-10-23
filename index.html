@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escritura & Tradição — Bíblia Católica Comentada</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Proza+Libre:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    <!-- Cliente Oficial Supabase JS via CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -280,7 +279,6 @@
         const SUPABASE_URL = 'https://mvjezxxrjgmxnfhjbxno.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_I70LXUn1wwHmkEZkxtbMig_-nBbvb70';
 
-        // Inicializa o cliente oficial do Supabase
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const bookChapters = {
@@ -311,7 +309,6 @@
             document.getElementById('display-title').textContent = 'Carregando...';
 
             try {
-                // Consulta via SDK Oficial
                 const { data, error } = await _supabase
                     .from('capitulos')
                     .select('*')
