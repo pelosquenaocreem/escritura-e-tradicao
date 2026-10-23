@@ -320,15 +320,15 @@
 
         <main>
             <article class="bible-card">
-                <h2 class="chapter-title" id="display-title">Carregando capítulo...</h2>
+                <h2 class="chapter-title" id="display-title">Gênesis — Capítulo 1</h2>
                 
-                <div class="sacred-image-frame" id="image-frame" style="display:none;">
-                    <img id="display-image" src="" alt="Arte Sacra">
-                    <div class="image-caption" id="display-caption"></div>
+                <div class="sacred-image-frame" id="image-frame">
+                    <img id="display-image" src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop" alt="A Criação da Luz">
+                    <div class="image-caption" id="display-caption">"E Deus disse: Faça-se a luz" — A Criação da Luz no Primeiro Dia</div>
                 </div>
 
                 <div class="bible-text" id="display-text">
-                    <p class="loading-text">Carregando texto do banco de dados...</p>
+                    <p class="loading-text">Carregando capítulo...</p>
                 </div>
             </article>
 
@@ -362,7 +362,7 @@
 
     <script>
         const SUPABASE_URL = 'https://mvjezxxrjgmxnfhjbxno.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_I70LXUn1wwHmkEZkxtbMig_-nBbvb7O'; // <--- INSIRA A SUA CHAVE PUBLISHABLE AQUI
+        const SUPABASE_KEY = 'sb_publishable_I70LXUn1wwHmkEZkxtbMig_-nBbvb70';
 
         const bookChapters = {
             'genesis': 50, 'exodo': 40, 'levitico': 27, 'numeros': 36, 'deuteronomio': 34,
@@ -403,7 +403,6 @@
             const chapter = document.getElementById('chapter-select').value;
 
             document.getElementById('display-title').textContent = 'Carregando...';
-            document.getElementById('display-text').innerHTML = '<p class="loading-text">Carregando capítulo do banco de dados...</p>';
 
             try {
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/capitulos?livro=eq.${book}&capitulo=eq.${chapter}&select=*`, {
@@ -424,8 +423,6 @@
                         document.getElementById('display-image').src = cap.imagem_url;
                         document.getElementById('display-caption').textContent = cap.imagem_legenda || '';
                         document.getElementById('image-frame').style.display = 'block';
-                    } else {
-                        document.getElementById('image-frame').style.display = 'none';
                     }
 
                     document.getElementById('text-comentario').innerHTML = cap.comentario_completo;
