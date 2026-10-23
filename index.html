@@ -306,10 +306,10 @@
             document.getElementById('display-title').textContent = 'Carregando...';
 
             try {
-                // Requisição sem cabeçalho Authorization exigente para evitar erro 401
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/capitulos?livro=eq.${book}&capitulo=eq.${chapter}&select=*`, {
                     headers: {
-                        'apikey': SUPABASE_KEY
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
                     }
                 });
 
