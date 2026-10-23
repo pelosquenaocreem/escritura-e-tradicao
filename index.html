@@ -232,7 +232,6 @@
             <div class="selector-group">
                 <label for="book-select">Livro:</label>
                 <select id="book-select" onchange="updateChapterOptions()">
-                    <!-- Mapeamento completo da Bíblia Católica -->
                     <optgroup label="Antigo Testamento">
                         <option value="genesis">Gênesis</option>
                         <option value="exodo">Êxodo</option>
@@ -315,7 +314,6 @@
             <div class="selector-group">
                 <label for="chapter-select">Capítulo:</label>
                 <select id="chapter-select" onchange="fetchChapterFromSupabase()">
-                    <!-- Preenchido dinamicamente -->
                 </select>
             </div>
         </div>
@@ -364,9 +362,8 @@
 
     <script>
         const SUPABASE_URL = 'https://mvjezxxrjgmxnfhjbxno.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_I70LXUn1wwHmkEZkxtbMig_-nBbvb7O'; // Insira sua publishable key aqui
+        const SUPABASE_KEY = 'sb_publishable_I70LXUn1wwHmkEZkxtbMig_-nBbvb7O'; // <--- INSIRA A SUA CHAVE PUBLISHABLE AQUI
 
-        // Mapeamento de total de capítulos por livro da Bíblia Católica
         const bookChapters = {
             'genesis': 50, 'exodo': 40, 'levitico': 27, 'numeros': 36, 'deuteronomio': 34,
             'josue': 24, 'juizes': 21, 'rute': 4, '1samuel': 31, '2samuel': 24,
