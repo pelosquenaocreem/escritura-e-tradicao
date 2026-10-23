@@ -61,6 +61,7 @@
             padding: 15px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
+            flex-wrap: wrap;
         }
 
         .selector-group {
@@ -100,7 +101,6 @@
             margin-bottom: 25px;
         }
 
-        /* Moldura de imagem sem bordas duplas e em tela cheia na caixa */
         .sacred-image-frame {
             text-align: center;
             margin-bottom: 30px;
@@ -111,7 +111,7 @@
 
         .sacred-image-frame img {
             width: 100%;
-            max-height: 480px;
+            max-height: 520px;
             object-fit: cover;
             display: block;
         }
@@ -152,10 +152,6 @@
             background: var(--primary-burgundy);
             color: #FFF;
             padding: 18px 25px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             font-family: 'Cinzel', serif;
             font-size: 1.1rem;
             letter-spacing: 1px;
@@ -236,14 +232,15 @@
         <div class="bible-selector">
             <div class="selector-group">
                 <label for="book-select">Livro:</label>
-                <select id="book-select" onchange="fetchChapterFromSupabase()">
+                <select id="book-select" onchange="updateChapterOptions()">
                     <option value="genesis">Gênesis</option>
+                    <option value="2samuel">2 Samuel</option>
                 </select>
             </div>
             <div class="selector-group">
                 <label for="chapter-select">Capítulo:</label>
                 <select id="chapter-select" onchange="fetchChapterFromSupabase()">
-                    <option value="1">Capítulo 1</option>
+                    <!-- Preenchido dinamicamente via Javascript -->
                 </select>
             </div>
         </div>
@@ -292,7 +289,29 @@
 
     <script>
         const SUPABASE_URL = 'https://mvjezxxrjgmxnfhjbxno.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_I70LXUn1wwHmkEZkxtbMig_-nBbvb7O'; // <--- INSIRA SUA CHAVE PUBLISHABLE AQUI
+        const SUPABASE_KEY = 'sb_publishable_I70LXUn1wwHmkEZkxtbMig_-nBbvb7O'; // Insira a sua chave publishable do Supabase
+
+        // Mapeamento de capítulos por livro
+        const bookChapters = {
+            'genesis': 50,
+            '2samuel': 24
+        };
+
+        function updateChapterOptions() {
+            const bookSelect = document.getElementById('book-select').value;
+            const chapterSelect = document.getElementById('chapter-select');
+            const totalChapters = bookChapters[bookSelect] || 1;
+
+            chapterSelect.innerHTML = '';
+            for (let i = 1; i <= totalChapters; i++) {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = `Capítulo ${i}`;
+                chapterSelect.appendChild(opt);
+            }
+
+            fetchChapterFromSupabase();
+        }
 
         async function fetchChapterFromSupabase() {
             const book = document.getElementById('book-select').value;
@@ -325,11 +344,15 @@
                     }
 
                     document.getElementById('text-comentario').innerHTML = cap.comentario_completo;
-                    document.getElementById('text-geografia').innerHTML = cap.curiosidades_geografia;
+                    document.getElementById('text-geografia').innerHTML = cap.curiosidades_geografia || '<p>Sem notas geográficas para este capítulo.</p>';
                     document.getElementById('text-reflexao').innerHTML = cap.reflexao_perguntas;
                 } else {
-                    document.getElementById('display-title').textContent = 'Capítulo não encontrado';
-                    document.getElementById('display-text').innerHTML = '<p class="loading-text">Este capítulo ainda não foi adicionado ao banco de dados.</p>';
+                    document.getElementById('display-title').textContent = `Capítulo ${chapter}`;
+                    document.getElementById('display-text').innerHTML = '<p class="loading-text">Este capítulo ainda está a ser preparado no banco de dados.</p>';
+                    document.getElementById('image-frame').style.display = 'none';
+                    document.getElementById('text-comentario').innerHTML = '<p>Conteúdo em breve.</p>';
+                    document.getElementById('text-geografia').innerHTML = '<p>Conteúdo em breve.</p>';
+                    document.getElementById('text-reflexao').innerHTML = '<p>Conteúdo em breve.</p>';
                 }
             } catch (error) {
                 console.error('Erro ao buscar dados:', error);
@@ -352,7 +375,7 @@
             evt.currentTarget.classList.add('active');
         }
 
-        window.onload = fetchChapterFromSupabase;
+        window.onload = updateChapterOptions;
     </script>
 </body>
 </html>
