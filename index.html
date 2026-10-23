@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escritura & Tradição — Bíblia Católica Comentada</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Proza+Libre:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg-parchment: #F6F1E5;
@@ -279,8 +278,6 @@
         const SUPABASE_URL = 'https://mvjezxxrjgmxnfhjbxno.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_I70LXUn1wwHmkEZkxtbMig_-nBbvb70';
 
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
         const bookChapters = {
             'genesis': 50
         };
@@ -304,18 +301,23 @@
         async function fetchChapterFromSupabase() {
             let rawBook = document.getElementById('book-select').value;
             let book = rawBook.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            const chapter = parseInt(document.getElementById('chapter-select').value, 10);
+            const chapter = document.getElementById('chapter-select').value;
 
             document.getElementById('display-title').textContent = 'Carregando...';
 
             try {
-                const { data, error } = await _supabase
-                    .from('capitulos')
-                    .select('*')
-                    .eq('livro', book)
-                    .eq('capitulo', chapter);
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/capitulos?livro=eq.${book}&capitulo=eq.${chapter}&select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
 
-                if (error) throw error;
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+
+                const data = await response.json();
 
                 if (data && data.length > 0) {
                     const cap = data[0];
