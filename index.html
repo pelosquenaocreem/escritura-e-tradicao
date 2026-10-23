@@ -210,14 +210,7 @@
             border-radius: 0 6px 6px 0;
         }
 
-        .quote-box p { margin-bottom: 12px; }
-
         .loading-text { text-align: center; font-style: italic; color: var(--text-muted); padding: 20px; }
-
-        @media (max-width: 600px) {
-            .tabs-nav { flex-direction: column; }
-            .tab-btn { width: 100%; text-align: center; }
-        }
     </style>
 </head>
 <body>
@@ -230,89 +223,13 @@
 
         <div class="bible-selector">
             <div class="selector-group">
-                <label for="book-select">Livro:</label>
+                <label for="book-select">LIVRO:</label>
                 <select id="book-select" onchange="updateChapterOptions()">
-                    <optgroup label="Antigo Testamento">
-                        <option value="genesis">Gênesis</option>
-                        <option value="exodo">Êxodo</option>
-                        <option value="levitico">Levítico</option>
-                        <option value="numeros">Números</option>
-                        <option value="deuteronomio">Deuteronômio</option>
-                        <option value="josue">Josué</option>
-                        <option value="juizes">Juízes</option>
-                        <option value="rute">Rute</option>
-                        <option value="1samuel">1 Samuel</option>
-                        <option value="2samuel">2 Samuel</option>
-                        <option value="1reis">1 Reis</option>
-                        <option value="2reis">2 Reis</option>
-                        <option value="1cronicas">1 Crônicas</option>
-                        <option value="2cronicas">2 Crônicas</option>
-                        <option value="esdras">Esdras</option>
-                        <option value="neemias">Neemias</option>
-                        <option value="tobias">Tobias</option>
-                        <option value="judite">Judite</option>
-                        <option value="ester">Ester</option>
-                        <option value="1macabeus">1 Macabeus</option>
-                        <option value="2macabeus">2 Macabeus</option>
-                        <option value="jo">Jó</option>
-                        <option value="salmos">Salmos</option>
-                        <option value="proverbios">Provérbios</option>
-                        <option value="eclesiastes">Eclesiastes</option>
-                        <option value="canticos">Cântico dos Cânticos</option>
-                        <option value="sabedoria">Sabedoria</option>
-                        <option value="eclesiastico">Eclesiástico (Sirácida)</option>
-                        <option value="isaias">Isaías</option>
-                        <option value="jeremias">Jeremias</option>
-                        <option value="lamentacoes">Lamentações</option>
-                        <option value="baruc">Baruc</option>
-                        <option value="ezequiel">Ezequiel</option>
-                        <option value="daniel">Daniel</option>
-                        <option value="oseias">Oseias</option>
-                        <option value="joel">Joel</option>
-                        <option value="amos">Amós</option>
-                        <option value="abdias">Abdias</option>
-                        <option value="jonas">Jonas</option>
-                        <option value="miqueias">Miqueias</option>
-                        <option value="naum">Naum</option>
-                        <option value="habacuc">Habacuc</option>
-                        <option value="sofanias">Sofonias</option>
-                        <option value="ageu">Ageu</option>
-                        <option value="zacarias">Zacarias</option>
-                        <option value="malaquias">Malaquias</option>
-                    </optgroup>
-                    <optgroup label="Novo Testamento">
-                        <option value="mateus">São Mateus</option>
-                        <option value="marcos">São Marcos</option>
-                        <option value="lucas">São Lucas</option>
-                        <option value="joao">São João</option>
-                        <option value="atos">Atos dos Apóstolos</option>
-                        <option value="romanos">Romanos</option>
-                        <option value="1corintios">1 Coríntios</option>
-                        <option value="2corintios">2 Coríntios</option>
-                        <option value="galatas">Gálatas</option>
-                        <option value="efesios">Efésios</option>
-                        <option value="filipenses">Filipenses</option>
-                        <option value="colossenses">Colossenses</option>
-                        <option value="1tessalonicenses">1 Tessalonicenses</option>
-                        <option value="2tessalonicenses">2 Tessalonicenses</option>
-                        <option value="1timoteo">1 Timóteo</option>
-                        <option value="2timoteo">2 Timóteo</option>
-                        <option value="tito">Tito</option>
-                        <option value="filemon">Filemon</option>
-                        <option value="hebreus">Hebreus</option>
-                        <option value="tiago">Tiago</option>
-                        <option value="1pedro">1 Pedro</option>
-                        <option value="2pedro">2 Pedro</option>
-                        <option value="1joao">1 João</option>
-                        <option value="2joao">2 João</option>
-                        <option value="3joao">3 João</option>
-                        <option value="judas">São Judas</option>
-                        <option value="apocalipse">Apocalipse</option>
-                    </optgroup>
+                    <option value="genesis">Gênesis</option>
                 </select>
             </div>
             <div class="selector-group">
-                <label for="chapter-select">Capítulo:</label>
+                <label for="chapter-select">CAPÍTULO:</label>
                 <select id="chapter-select" onchange="fetchChapterFromSupabase()">
                 </select>
             </div>
@@ -320,11 +237,11 @@
 
         <main>
             <article class="bible-card">
-                <h2 class="chapter-title" id="display-title">Gênesis — Capítulo 1</h2>
+                <h2 class="chapter-title" id="display-title">Carregando...</h2>
                 
-                <div class="sacred-image-frame" id="image-frame">
-                    <img id="display-image" src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop" alt="A Criação da Luz">
-                    <div class="image-caption" id="display-caption">"E Deus disse: Faça-se a luz" — A Criação da Luz no Primeiro Dia</div>
+                <div class="sacred-image-frame" id="image-frame" style="display:none;">
+                    <img id="display-image" src="" alt="Arte Sacra">
+                    <div class="image-caption" id="display-caption"></div>
                 </div>
 
                 <div class="bible-text" id="display-text">
@@ -365,21 +282,7 @@
         const SUPABASE_KEY = 'sb_publishable_I70LXUn1wwHmkEZkxtbMig_-nBbvb70';
 
         const bookChapters = {
-            'genesis': 50, 'exodo': 40, 'levitico': 27, 'numeros': 36, 'deuteronomio': 34,
-            'josue': 24, 'juizes': 21, 'rute': 4, '1samuel': 31, '2samuel': 24,
-            '1reis': 22, '2reis': 25, '1cronicas': 29, '2cronicas': 36, 'esdras': 10,
-            'neemias': 13, 'tobias': 14, 'judite': 16, 'ester': 10, '1macabeus': 16,
-            '2macabeus': 15, 'jo': 42, 'salmos': 150, 'proverbios': 31, 'eclesiastes': 12,
-            'canticos': 8, 'sabedoria': 19, 'eclesiastico': 51, 'isaias': 66, 'jeremias': 52,
-            'lamentacoes': 5, 'baruc': 6, 'ezequiel': 48, 'daniel': 14, 'oseias': 14,
-            'joel': 4, 'amos': 9, 'abdias': 1, 'jonas': 4, 'miqueias': 7,
-            'naum': 3, 'habacuc': 3, 'sofanias': 3, 'ageu': 2, 'zacarias': 14,
-            'malaquias': 3, 'mateus': 28, 'marcos': 16, 'lucas': 24, 'joao': 21,
-            'atos': 28, 'romanos': 16, '1corintios': 16, '2corintios': 13, 'galatas': 6,
-            'efesios': 6, 'filipenses': 4, 'colossenses': 4, '1tessalonicenses': 5, '2tessalonicenses': 3,
-            '1timoteo': 6, '2timoteo': 4, 'tito': 3, 'filemon': 1, 'hebreus': 13,
-            'tiago': 5, '1pedro': 5, '2pedro': 3, '1joao': 5, '2joao': 1,
-            '3joao': 1, 'judas': 1, 'apocalipse': 22
+            'genesis': 50
         };
 
         function updateChapterOptions() {
@@ -423,6 +326,8 @@
                         document.getElementById('display-image').src = cap.imagem_url;
                         document.getElementById('display-caption').textContent = cap.imagem_legenda || '';
                         document.getElementById('image-frame').style.display = 'block';
+                    } else {
+                        document.getElementById('image-frame').style.display = 'none';
                     }
 
                     document.getElementById('text-comentario').innerHTML = cap.comentario_completo;
