@@ -223,6 +223,10 @@
                 <label for="book-select">LIVRO:</label>
                 <select id="book-select" onchange="updateChapterOptions()">
                     <option value="genesis">Gênesis</option>
+                    <option value="exodo">Êxodo</option>
+                    <option value="levitico">Levítico</option>
+                    <option value="numeros">Números</option>
+                    <option value="deuteronomio">Deuteronômio</option>
                 </select>
             </div>
             <div class="selector-group">
@@ -279,7 +283,11 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12amV6eHhyamdteG5maGpieG5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2OTQ3OTgsImV4cCI6MjEwODI3MDc5OH0.7Xdz_nLejoPJV-6pZHX6Q3DgtAu-_076M8WbG0CjFQ4';
 
         const bookChapters = {
-            'genesis': 50
+            'genesis': 50,
+            'exodo': 40,
+            'levitico': 27,
+            'numeros': 36,
+            'deuteronomio': 34
         };
 
         function updateChapterOptions() {
