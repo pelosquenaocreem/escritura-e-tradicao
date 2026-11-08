@@ -56,7 +56,7 @@
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             background: var(--bg-card);
             padding: 15px;
             border: 1px solid var(--border-color);
@@ -82,6 +82,13 @@
             color: var(--text-dark);
             border-radius: 4px;
             cursor: pointer;
+        }
+
+        .font-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
         }
 
         .bible-card {
@@ -236,6 +243,11 @@
             </div>
         </div>
 
+        <div class="font-controls">
+            <button class="tab-btn" onclick="mudarTamanhoLetra(1)">A+</button>
+            <button class="tab-btn" onclick="mudarTamanhoLetra(-1)">A-</button>
+        </div>
+
         <main>
             <article class="bible-card">
                 <h2 class="chapter-title" id="display-title">Carregando...</h2>
@@ -281,6 +293,29 @@
     <script>
         const SUPABASE_URL = 'https://mvjezxxrjgmxnfhjbxno.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12amV6eHhyamdteG5maGpieG5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2OTQ3OTgsImV4cCI6MjEwODI3MDc5OH0.7Xdz_nLejoPJV-6pZHX6Q3DgtAu-_076M8WbG0CjFQ4';
+
+        // Variáveis de controle de fonte (em REM)
+        let tamanhoFonteBible = 1.35;
+        let tamanhoFonteComentario = 1.08;
+
+        function mudarTamanhoLetra(direcao) {
+            // Ajusta o tamanho
+            tamanhoFonteBible += direcao * 0.1;
+            tamanhoFonteComentario += direcao * 0.1;
+
+            // Define os limites máximos e mínimos para não quebrar o layout
+            if (tamanhoFonteBible < 1.0) tamanhoFonteBible = 1.0;
+            if (tamanhoFonteBible > 2.5) tamanhoFonteBible = 2.5;
+            if (tamanhoFonteComentario < 0.8) tamanhoFonteComentario = 0.8;
+            if (tamanhoFonteComentario > 2.0) tamanhoFonteComentario = 2.0;
+
+            // Aplica no texto da Bíblia
+            document.getElementById('display-text').style.fontSize = tamanhoFonteBible + 'rem';
+            
+            // Aplica nos textos das abas de comentários
+            const comentarios = document.querySelectorAll('.commentary-body');
+            comentarios.forEach(el => el.style.fontSize = tamanhoFonteComentario + 'rem');
+        }
 
         const bookChapters = {
             'genesis': 50,
