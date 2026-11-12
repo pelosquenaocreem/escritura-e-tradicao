@@ -26,7 +26,7 @@
             font-family: 'Proza Libre', Georgia, serif;
             line-height: 1.8;
             padding: 20px;
-            transition: all 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .container { max-width: 900px; margin: 0 auto; }
@@ -213,29 +213,64 @@
 
         .loading-text { text-align: center; font-style: italic; color: var(--text-muted); padding: 20px; }
 
-        /* Estilos do Modo Leitura */
-        body.modo-leitura .tabs-nav { display: none; }
-        body.modo-leitura .accordion-header { display: none; }
+        /* =========================================
+           O VERDADEIRO MODO LEITURA (ESTILO KINDLE)
+           ========================================= */
+        body.modo-leitura {
+            background-color: #FFFFFF;
+            color: #000000;
+        }
+        
+        /* Esconde os enfeites, menus e o cabeçalho do site */
+        body.modo-leitura header,
+        body.modo-leitura .bible-selector,
+        body.modo-leitura .tabs-nav,
+        body.modo-leitura .accordion-header {
+            display: none;
+        }
+
+        /* Remove fundos e bordas para virar folha de papel */
+        body.modo-leitura .bible-card,
         body.modo-leitura .accordion-section { 
             border: none; 
             box-shadow: none; 
             background: transparent; 
+            padding: 0;
         }
-        body.modo-leitura .accordion-content { padding: 0; }
+        
+        body.modo-leitura .accordion-content { padding: 0; margin-top: 40px; }
+        
+        /* Força todas as abas a aparecerem em sequência */
         body.modo-leitura .tab-pane { 
             display: block !important; 
             margin-bottom: 50px; 
         }
+
+        /* Ajustes de cores para o modo leitura (Tudo preto/cinza escuro) */
+        body.modo-leitura .chapter-title {
+            color: #000000;
+            font-size: 2.2rem;
+            margin-top: 20px;
+        }
         
+        body.modo-leitura .verse-num {
+            color: #333333;
+        }
+
+        body.modo-leitura .commentary-body {
+            color: #000000;
+        }
+
+        /* Títulos de separação que só aparecem no modo leitura */
         .titulo-secao-leitura {
             display: none;
             font-family: 'Cinzel', serif;
-            color: var(--primary-burgundy);
-            font-size: 1.6rem;
+            color: #000000;
+            font-size: 1.5rem;
             margin-bottom: 20px;
-            margin-top: 20px;
+            margin-top: 30px;
             text-align: center;
-            border-bottom: 1px solid var(--accent-gold);
+            border-bottom: 1px solid #CCCCCC;
             padding-bottom: 10px;
         }
         
@@ -273,7 +308,6 @@
                     <option value="2samuel">2 Samuel</option>
                     <option value="1reis">1 Reis</option>
                     <option value="2reis">2 Reis</option>
-                    <!-- NOVOS LIVROS ADICIONADOS AQUI -->
                     <option value="1cronicas">1 Crônicas</option>
                     <option value="2cronicas">2 Crônicas</option>
                     <option value="esdras">Esdras</option>
@@ -373,7 +407,7 @@
             if (modoLeituraAtivo) {
                 document.body.classList.add('modo-leitura');
                 btn.classList.add('active');
-                btn.textContent = '📖 Sair do Modo Leitura';
+                btn.textContent = 'Sair do Modo Leitura';
             } else {
                 document.body.classList.remove('modo-leitura');
                 btn.classList.remove('active');
