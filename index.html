@@ -213,9 +213,7 @@
 
         .loading-text { text-align: center; font-style: italic; color: var(--text-muted); padding: 20px; }
 
-        /* =========================================
-           ESTILOS DO MODO LEITURA
-           ========================================= */
+        /* Estilos do Modo Leitura */
         body.modo-leitura .tabs-nav { display: none; }
         body.modo-leitura .accordion-header { display: none; }
         body.modo-leitura .accordion-section { 
@@ -275,6 +273,16 @@
                     <option value="2samuel">2 Samuel</option>
                     <option value="1reis">1 Reis</option>
                     <option value="2reis">2 Reis</option>
+                    <!-- NOVOS LIVROS ADICIONADOS AQUI -->
+                    <option value="1cronicas">1 Crônicas</option>
+                    <option value="2cronicas">2 Crônicas</option>
+                    <option value="esdras">Esdras</option>
+                    <option value="neemias">Neemias</option>
+                    <option value="tobias">Tobias</option>
+                    <option value="judite">Judite</option>
+                    <option value="ester">Ester</option>
+                    <option value="1macabeus">1 Macabeus</option>
+                    <option value="2macabeus">2 Macabeus</option>
                 </select>
             </div>
             <div class="selector-group">
@@ -339,7 +347,6 @@
         const SUPABASE_URL = 'https://mvjezxxrjgmxnfhjbxno.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12amV6eHhyamdteG5maGpieG5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2OTQ3OTgsImV4cCI6MjEwODI3MDc5OH0.7Xdz_nLejoPJV-6pZHX6Q3DgtAu-_076M8WbG0CjFQ4';
 
-        // Variáveis de controle de fonte
         let tamanhoFonteBible = 1.35;
         let tamanhoFonteComentario = 1.08;
 
@@ -358,7 +365,6 @@
             comentarios.forEach(el => el.style.fontSize = tamanhoFonteComentario + 'rem');
         }
 
-        // Função do Modo Leitura
         let modoLeituraAtivo = false;
         function toggleModoLeitura() {
             modoLeituraAtivo = !modoLeituraAtivo;
@@ -387,7 +393,16 @@
             '1samuel': 31,
             '2samuel': 24,
             '1reis': 22,
-            '2reis': 25
+            '2reis': 25,
+            '1cronicas': 29,
+            '2cronicas': 36,
+            'esdras': 10,
+            'neemias': 13,
+            'tobias': 14,
+            'judite': 16,
+            'ester': 16,
+            '1macabeus': 16,
+            '2macabeus': 15
         };
 
         function updateChapterOptions() {
