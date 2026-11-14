@@ -221,7 +221,6 @@
             color: #000000;
         }
         
-        /* Esconde os enfeites, menus e o cabeçalho do site */
         body.modo-leitura header,
         body.modo-leitura .bible-selector,
         body.modo-leitura .tabs-nav,
@@ -229,7 +228,6 @@
             display: none;
         }
 
-        /* Remove fundos e bordas para virar folha de papel */
         body.modo-leitura .bible-card,
         body.modo-leitura .accordion-section { 
             border: none; 
@@ -240,13 +238,11 @@
         
         body.modo-leitura .accordion-content { padding: 0; margin-top: 40px; }
         
-        /* Força todas as abas a aparecerem em sequência */
         body.modo-leitura .tab-pane { 
             display: block !important; 
             margin-bottom: 50px; 
         }
 
-        /* Ajustes de cores para o modo leitura (Tudo preto/cinza escuro) */
         body.modo-leitura .chapter-title {
             color: #000000;
             font-size: 2.2rem;
@@ -261,7 +257,6 @@
             color: #000000;
         }
 
-        /* Títulos de separação que só aparecem no modo leitura */
         .titulo-secao-leitura {
             display: none;
             font-family: 'Cinzel', serif;
@@ -296,6 +291,7 @@
             <div class="selector-group">
                 <label for="book-select">LIVRO:</label>
                 <select id="book-select" onchange="updateChapterOptions()">
+                    <!-- PENTATEUCO E HISTÓRICOS -->
                     <option value="genesis">Gênesis</option>
                     <option value="exodo">Êxodo</option>
                     <option value="levitico">Levítico</option>
@@ -317,6 +313,33 @@
                     <option value="ester">Ester</option>
                     <option value="1macabeus">1 Macabeus</option>
                     <option value="2macabeus">2 Macabeus</option>
+                    <!-- LIVROS SAPIENCIAIS -->
+                    <option value="jo">Jó</option>
+                    <option value="salmos">Salmos</option>
+                    <option value="proverbios">Provérbios</option>
+                    <option value="eclesiastes">Eclesiastes</option>
+                    <option value="canticos">Cântico dos Cânticos</option>
+                    <option value="sabedoria">Sabedoria</option>
+                    <option value="eclesiastico">Eclesiástico</option>
+                    <!-- LIVROS PROFÉTICOS -->
+                    <option value="isaias">Isaías</option>
+                    <option value="jeremias">Jeremias</option>
+                    <option value="lamentacoes">Lamentações</option>
+                    <option value="baruc">Baruc</option>
+                    <option value="ezequiel">Ezequiel</option>
+                    <option value="daniel">Daniel</option>
+                    <option value="oseias">Oseias</option>
+                    <option value="joel">Joel</option>
+                    <option value="amos">Amós</option>
+                    <option value="abdias">Abdias</option>
+                    <option value="jonas">Jonas</option>
+                    <option value="miqueias">Miqueias</option>
+                    <option value="naum">Naum</option>
+                    <option value="habacuc">Habacuc</option>
+                    <option value="sofonias">Sofonias</option>
+                    <option value="ageu">Ageu</option>
+                    <option value="zacarias">Zacarias</option>
+                    <option value="malaquias">Malaquias</option>
                 </select>
             </div>
             <div class="selector-group">
@@ -416,27 +439,15 @@
         }
 
         const bookChapters = {
-            'genesis': 50,
-            'exodo': 40,
-            'levitico': 27,
-            'numeros': 36,
-            'deuteronomio': 34,
-            'josue': 24,
-            'juizes': 21,
-            'rute': 4,
-            '1samuel': 31,
-            '2samuel': 24,
-            '1reis': 22,
-            '2reis': 25,
-            '1cronicas': 29,
-            '2cronicas': 36,
-            'esdras': 10,
-            'neemias': 13,
-            'tobias': 14,
-            'judite': 16,
-            'ester': 16,
-            '1macabeus': 16,
-            '2macabeus': 15
+            'genesis': 50, 'exodo': 40, 'levitico': 27, 'numeros': 36, 'deuteronomio': 34,
+            'josue': 24, 'juizes': 21, 'rute': 4, '1samuel': 31, '2samuel': 24,
+            '1reis': 22, '2reis': 25, '1cronicas': 29, '2cronicas': 36, 'esdras': 10,
+            'neemias': 13, 'tobias': 14, 'judite': 16, 'ester': 16, '1macabeus': 16, '2macabeus': 15,
+            'jo': 42, 'salmos': 150, 'proverbios': 31, 'eclesiastes': 12, 'canticos': 8,
+            'sabedoria': 19, 'eclesiastico': 51, 'isaias': 66, 'jeremias': 52, 'lamentacoes': 5,
+            'baruc': 6, 'ezequiel': 48, 'daniel': 14, 'oseias': 14, 'joel': 4,
+            'amos': 9, 'abdias': 1, 'jonas': 4, 'miqueias': 7, 'naum': 3,
+            'habacuc': 3, 'sofonias': 3, 'ageu': 2, 'zacarias': 14, 'malaquias': 3
         };
 
         function updateChapterOptions() {
