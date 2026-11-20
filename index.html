@@ -214,7 +214,7 @@
         .loading-text { text-align: center; font-style: italic; color: var(--text-muted); padding: 20px; }
 
         /* =========================================
-           O VERDADEIRO MODO LEITURA (ESTILO KINDLE)
+           MODO LEITURA (ESTILO KINDLE)
            ========================================= */
         body.modo-leitura {
             background-color: #FFFFFF;
@@ -291,7 +291,7 @@
             <div class="selector-group">
                 <label for="book-select">LIVRO:</label>
                 <select id="book-select" onchange="updateChapterOptions()">
-                    <!-- PENTATEUCO E HISTÓRICOS -->
+                    <!-- ANTIGO TESTAMENTO -->
                     <option value="genesis">Gênesis</option>
                     <option value="exodo">Êxodo</option>
                     <option value="levitico">Levítico</option>
@@ -313,7 +313,6 @@
                     <option value="ester">Ester</option>
                     <option value="1macabeus">1 Macabeus</option>
                     <option value="2macabeus">2 Macabeus</option>
-                    <!-- LIVROS SAPIENCIAIS -->
                     <option value="jo">Jó</option>
                     <option value="salmos">Salmos</option>
                     <option value="proverbios">Provérbios</option>
@@ -321,7 +320,6 @@
                     <option value="canticos">Cântico dos Cânticos</option>
                     <option value="sabedoria">Sabedoria</option>
                     <option value="eclesiastico">Eclesiástico</option>
-                    <!-- LIVROS PROFÉTICOS -->
                     <option value="isaias">Isaías</option>
                     <option value="jeremias">Jeremias</option>
                     <option value="lamentacoes">Lamentações</option>
@@ -340,6 +338,34 @@
                     <option value="ageu">Ageu</option>
                     <option value="zacarias">Zacarias</option>
                     <option value="malaquias">Malaquias</option>
+                    <!-- NOVO TESTAMENTO -->
+                    <option value="mateus">Mateus</option>
+                    <option value="marcos">Marcos</option>
+                    <option value="lucas">Lucas</option>
+                    <option value="joao">João</option>
+                    <option value="atos">Atos dos Apóstolos</option>
+                    <option value="romanos">Romanos</option>
+                    <option value="1corintios">1 Coríntios</option>
+                    <option value="2corintios">2 Coríntios</option>
+                    <option value="galatas">Gálatas</option>
+                    <option value="efesios">Efésios</option>
+                    <option value="filipenses">Filipenses</option>
+                    <option value="colossenses">Colossenses</option>
+                    <option value="1tessalonicenses">1 Tessalonicenses</option>
+                    <option value="2tessalonicenses">2 Tessalonicenses</option>
+                    <option value="1timoteo">1 Timóteo</option>
+                    <option value="2timoteo">2 Timóteo</option>
+                    <option value="tito">Tito</option>
+                    <option value="filemon">Filemón</option>
+                    <option value="hebreus">Hebreus</option>
+                    <option value="tiago">Tiago</option>
+                    <option value="1pedro">1 Pedro</option>
+                    <option value="2pedro">2 Pedro</option>
+                    <option value="1joao">1 João</option>
+                    <option value="2joao">2 João</option>
+                    <option value="3joao">3 João</option>
+                    <option value="judas">Judas</option>
+                    <option value="apocalipse">Apocalipse</option>
                 </select>
             </div>
             <div class="selector-group">
@@ -447,7 +473,13 @@
             'sabedoria': 19, 'eclesiastico': 51, 'isaias': 66, 'jeremias': 52, 'lamentacoes': 5,
             'baruc': 6, 'ezequiel': 48, 'daniel': 14, 'oseias': 14, 'joel': 4,
             'amos': 9, 'abdias': 1, 'jonas': 4, 'miqueias': 7, 'naum': 3,
-            'habacuc': 3, 'sofonias': 3, 'ageu': 2, 'zacarias': 14, 'malaquias': 3
+            'habacuc': 3, 'sofonias': 3, 'ageu': 2, 'zacarias': 14, 'malaquias': 3,
+            'mateus': 28, 'marcos': 16, 'lucas': 24, 'joao': 21, 'atos': 28,
+            'romanos': 16, '1corintios': 16, '2corintios': 13, 'galatas': 6, 'efesios': 6,
+            'filipenses': 4, 'colossenses': 4, '1tessalonicenses': 5, '2tessalonicenses': 3,
+            '1timoteo': 6, '2timoteo': 4, 'tito': 3, 'filemon': 1, 'hebreus': 13,
+            'tiago': 5, '1pedro': 5, '2pedro': 3, '1joao': 5, '2joao': 1, '3joao': 1,
+            'judas': 1, 'apocalipse': 22
         };
 
         function updateChapterOptions() {
