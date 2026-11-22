@@ -356,4 +356,294 @@
                         <option value="hebreus">Hebreus</option>
                         <option value="tiago">Tiago</option>
                         <option value="1pedro">1 Pedro</option>
-                        <option value="2pedro
+                        <option value="2pedro">2 Pedro</option>
+                        <option value="1joao">1 João</option>
+                        <option value="2joao">2 João</option>
+                        <option value="3joao">3 João</option>
+                        <option value="judas">Judas</option>
+                        <option value="apocalipse">Apocalipse</option>
+                    </select>
+                </div>
+                <div class="selector-group">
+                    <label for="chapter-select">CAPÍTULO:</label>
+                    <select id="chapter-select" onchange="fetchChapterFromSupabase()"></select>
+                </div>
+            </div>
+
+            <main>
+                <article class="content-card">
+                    <h2 class="section-title" id="display-title">Carregando...</h2>
+                    
+                    <div class="sacred-image-frame" id="image-frame" style="display:none;">
+                        <img id="display-image" src="" alt="Arte Sagrada" onerror="this.parentElement.style.display='none';">
+                    </div>
+
+                    <div class="main-text" id="display-text">
+                        <p class="loading-text">Carregando capítulo...</p>
+                    </div>
+                </article>
+
+                <section class="accordion-section">
+                    <div class="accordion-header">COMENTÁRIO & REFLEXÃO</div>
+                    <div class="accordion-content">
+                        <div class="tabs-nav">
+                            <button class="tab-btn active" onclick="openTab(event, 'tab-comentario', 'escritura')">Comentário Teológico</button>
+                            <button class="tab-btn" onclick="openTab(event, 'tab-geografia', 'escritura')">Notas & Geografia</button>
+                            <button class="tab-btn" onclick="openTab(event, 'tab-reflexao', 'escritura')">Exame & Reflexão</button>
+                        </div>
+                        <div id="tab-comentario" class="tab-pane active escritura-tab">
+                            <h3 class="titulo-secao-leitura">Comentário Teológico</h3>
+                            <div class="secondary-text" id="text-comentario">Carregando...</div>
+                        </div>
+                        <div id="tab-geografia" class="tab-pane escritura-tab">
+                            <h3 class="titulo-secao-leitura">Notas & Geografia</h3>
+                            <div class="secondary-text" id="text-geografia">Carregando...</div>
+                        </div>
+                        <div id="tab-reflexao" class="tab-pane escritura-tab">
+                            <h3 class="titulo-secao-leitura">Exame & Reflexão</h3>
+                            <div class="secondary-text" id="text-reflexao">Carregando...</div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+
+        <!-- ==============================================
+             SEÇÃO 2: SANTO DO DIA
+             ============================================== -->
+        <div id="app-santo" class="app-view">
+            <div class="controls-bar">
+                <div class="selector-group">
+                    <label for="date-santo">DATA:</label>
+                    <input type="date" id="date-santo" onchange="fetchSantoFromSupabase()">
+                </div>
+                <button class="tab-btn" onclick="setTodaySanto()">Ir para Hoje</button>
+            </div>
+
+            <main>
+                <article class="content-card">
+                    <h2 class="section-title" id="santo-title">Carregando Santo...</h2>
+                    
+                    <div class="sacred-image-frame" id="santo-image-frame" style="display:none;">
+                        <!-- O ESCUDO ESTÁ AQUI NA LINHA ABAIXO! -->
+                        <img id="santo-display-image" src="" alt="Arte do Santo" onerror="this.parentElement.style.display='none';">
+                    </div>
+
+                    <div class="main-text" id="santo-historia">
+                        <p class="loading-text">Buscando a história do santo...</p>
+                    </div>
+                </article>
+
+                <section class="accordion-section">
+                    <div class="accordion-header">VIRTUDE & ORAÇÃO</div>
+                    <div class="accordion-content">
+                        <div class="tabs-nav">
+                            <button class="tab-btn active" onclick="openTab(event, 'tab-virtude', 'santo')">Reflexão da Virtude</button>
+                            <button class="tab-btn" onclick="openTab(event, 'tab-oracao', 'santo')">Oração Litúrgica</button>
+                        </div>
+                        <div id="tab-virtude" class="tab-pane active santo-tab">
+                            <h3 class="titulo-secao-leitura">Virtude</h3>
+                            <div class="secondary-text" id="santo-virtude">Carregando virtude...</div>
+                        </div>
+                        <div id="tab-oracao" class="tab-pane santo-tab">
+                            <h3 class="titulo-secao-leitura">Oração</h3>
+                            <div class="secondary-text" id="santo-oracao">Carregando oração...</div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://mvjezxxrjgmxnfhjbxno.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12amV6eHhyamdteG5maGpieG5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2OTQ3OTgsImV4cCI6MjEwODI3MDc5OH0.7Xdz_nLejoPJV-6pZHX6Q3DgtAu-_076M8WbG0CjFQ4';
+
+        // -----------------------------------------
+        // CONTROLE DE NAVEGAÇÃO PRINCIPAL E FONTES
+        // -----------------------------------------
+        function switchApp(appName) {
+            document.querySelectorAll('.app-view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('app-' + appName).classList.add('active');
+            document.getElementById('btn-nav-' + appName).classList.add('active');
+
+            if (appName === 'santo' && document.getElementById('santo-title').textContent === 'Carregando Santo...') {
+                setTodaySanto();
+            }
+        }
+
+        let tamanhoFonteMain = 1.35;
+        let tamanhoFonteSecundaria = 1.08;
+
+        function mudarTamanhoLetra(direcao) {
+            tamanhoFonteMain += direcao * 0.1;
+            tamanhoFonteSecundaria += direcao * 0.1;
+            document.querySelectorAll('.main-text').forEach(el => el.style.fontSize = tamanhoFonteMain + 'rem');
+            document.querySelectorAll('.secondary-text').forEach(el => el.style.fontSize = tamanhoFonteSecundaria + 'rem');
+        }
+
+        let modoLeituraAtivo = false;
+        function toggleModoLeitura() {
+            modoLeituraAtivo = !modoLeituraAtivo;
+            const btn = document.getElementById('btn-leitura');
+            if (modoLeituraAtivo) {
+                document.body.classList.add('modo-leitura');
+                btn.classList.add('active');
+                btn.textContent = 'Sair do Modo Leitura';
+            } else {
+                document.body.classList.remove('modo-leitura');
+                btn.classList.remove('active');
+                btn.textContent = '📖 Modo Leitura';
+            }
+        }
+
+        function openTab(evt, tabId, context) {
+            const panes = document.getElementsByClassName(context + '-tab');
+            for (let i = 0; i < panes.length; i++) {
+                panes[i].classList.remove('active');
+            }
+            const buttons = evt.currentTarget.parentElement.getElementsByClassName('tab-btn');
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        // -----------------------------------------
+        // LÓGICA DO SANTO DO DIA
+        // -----------------------------------------
+        function setTodaySanto() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            document.getElementById('date-santo').value = `${yyyy}-${mm}-${dd}`;
+            fetchSantoFromSupabase();
+        }
+
+        async function fetchSantoFromSupabase() {
+            const dateInput = document.getElementById('date-santo').value;
+            if (!dateInput) return;
+            const parts = dateInput.split('-');
+            const mes = parseInt(parts[1], 10);
+            const dia = parseInt(parts[2], 10);
+
+            document.getElementById('santo-title').textContent = 'Carregando...';
+            document.getElementById('santo-image-frame').style.display = 'none';
+            document.getElementById('santo-historia').innerHTML = '<p class="loading-text">Buscando a história...</p>';
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/santo_do_dia?mes=eq.${mes}&dia=eq.${dia}&select=*`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                });
+                const data = await response.json();
+
+                if (data && data.length > 0 && data[0].nome_santo) {
+                    const santo = data[0];
+                    document.getElementById('santo-title').textContent = santo.nome_santo;
+                    
+                    if (santo.imagem_url && santo.imagem_url.trim() !== "") {
+                        document.getElementById('santo-display-image').src = santo.imagem_url;
+                        document.getElementById('santo-image-frame').style.display = 'block';
+                    }
+                    
+                    document.getElementById('santo-historia').innerHTML = santo.historia_completa;
+                    document.getElementById('santo-virtude').innerHTML = santo.virtude_reflexao;
+                    document.getElementById('santo-oracao').innerHTML = santo.oracao;
+                } else {
+                    document.getElementById('santo-title').textContent = `Dia ${String(dia).padStart(2, '0')}/${String(mes).padStart(2, '0')}`;
+                    document.getElementById('santo-historia').innerHTML = '<p class="loading-text">A história deste santo ainda está sendo escrita pelo robô. Volte mais tarde!</p>';
+                    document.getElementById('santo-virtude').innerHTML = '<p>Conteúdo em breve.</p>';
+                    document.getElementById('santo-oracao').innerHTML = '<p>Conteúdo em breve.</p>';
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('santo-title').textContent = 'Erro de Conexão';
+            }
+        }
+
+        // -----------------------------------------
+        // LÓGICA DA BÍBLIA
+        // -----------------------------------------
+        const bookChapters = {
+            'genesis': 50, 'exodo': 40, 'levitico': 27, 'numeros': 36, 'deuteronomio': 34,
+            'josue': 24, 'juizes': 21, 'rute': 4, '1samuel': 31, '2samuel': 24,
+            '1reis': 22, '2reis': 25, '1cronicas': 29, '2cronicas': 36, 'esdras': 10,
+            'neemias': 13, 'tobias': 14, 'judite': 16, 'ester': 16, '1macabeus': 16, '2macabeus': 15,
+            'jo': 42, 'salmos': 150, 'proverbios': 31, 'eclesiastes': 12, 'canticos': 8,
+            'sabedoria': 19, 'eclesiastico': 51, 'isaias': 66, 'jeremias': 52, 'lamentacoes': 5,
+            'baruc': 6, 'ezequiel': 48, 'daniel': 14, 'oseias': 14, 'joel': 4,
+            'amos': 9, 'abdias': 1, 'jonas': 4, 'miqueias': 7, 'naum': 3,
+            'habacuc': 3, 'sofonias': 3, 'ageu': 2, 'zacarias': 14, 'malaquias': 3,
+            'mateus': 28, 'marcos': 16, 'lucas': 24, 'joao': 21, 'atos': 28,
+            'romanos': 16, '1corintios': 16, '2corintios': 13, 'galatas': 6, 'efesios': 6,
+            'filipenses': 4, 'colossenses': 4, '1tessalonicenses': 5, '2tessalonicenses': 3,
+            '1timoteo': 6, '2timoteo': 4, 'tito': 3, 'filemon': 1, 'hebreus': 13,
+            'tiago': 5, '1pedro': 5, '2pedro': 3, '1joao': 5, '2joao': 1, '3joao': 1,
+            'judas': 1, 'apocalipse': 22
+        };
+        
+        function updateChapterOptions() {
+            const bookSelect = document.getElementById('book-select').value;
+            const chapterSelect = document.getElementById('chapter-select');
+            const totalChapters = bookChapters[bookSelect] || 1;
+
+            chapterSelect.innerHTML = '';
+            for (let i = 1; i <= totalChapters; i++) {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = `Capítulo ${i}`;
+                chapterSelect.appendChild(opt);
+            }
+            fetchChapterFromSupabase();
+        }
+
+        async function fetchChapterFromSupabase() {
+            let rawBook = document.getElementById('book-select').value;
+            let book = rawBook.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const chapter = document.getElementById('chapter-select').value;
+
+            document.getElementById('display-title').textContent = 'Carregando...';
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/capitulos?livro=eq.${book}&capitulo=eq.${chapter}&select=*`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                });
+                const data = await response.json();
+
+                if (data && data.length > 0) {
+                    const cap = data[0];
+                    document.getElementById('display-title').textContent = cap.titulo_capitulo;
+                    document.getElementById('display-text').innerHTML = cap.texto_biblico;
+                    
+                    if (cap.imagem_url && cap.imagem_url.trim() !== "") {
+                        document.getElementById('display-image').src = cap.imagem_url;
+                        document.getElementById('image-frame').style.display = 'block';
+                    } else {
+                        document.getElementById('image-frame').style.display = 'none';
+                    }
+
+                    document.getElementById('text-comentario').innerHTML = cap.comentario_completo;
+                    document.getElementById('text-geografia').innerHTML = cap.curiosidades_geografia || '<p>Sem notas.</p>';
+                    document.getElementById('text-reflexao').innerHTML = cap.reflexao_perguntas;
+                } else {
+                    document.getElementById('display-title').textContent = `Capítulo ${chapter}`;
+                    document.getElementById('display-text').innerHTML = '<p class="loading-text">Capítulo não encontrado.</p>';
+                    document.getElementById('image-frame').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Erro de conexão:', error);
+                document.getElementById('display-title').textContent = 'Erro de Conexão com o Banco';
+            }
+        }
+
+        window.onload = function() {
+            updateChapterOptions();
+        };
+    </script>
+</body>
+</html>
