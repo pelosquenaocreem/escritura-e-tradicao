@@ -264,7 +264,6 @@
 
     <div class="container">
         
-        <!-- NAVEGAÇÃO ENTRE AS SEÇÕES DO SITE -->
         <nav class="main-nav">
             <button class="nav-btn active" id="btn-nav-escritura" onclick="switchApp('escritura')">📖 Sagrada Escritura</button>
             <button class="nav-btn" id="btn-nav-santo" onclick="switchApp('santo')">🕯️ Santo do Dia</button>
@@ -376,7 +375,7 @@
                     <h2 class="section-title" id="display-title">Carregando...</h2>
                     
                     <div class="sacred-image-frame" id="image-frame" style="display:none;">
-                        <img id="display-image" src="" alt="Arte Sacra">
+                        <img id="display-image" src="" alt="Arte Sagrada">
                     </div>
 
                     <div class="main-text" id="display-text">
@@ -425,6 +424,11 @@
             <main>
                 <article class="content-card">
                     <h2 class="section-title" id="santo-title">Carregando Santo...</h2>
+                    
+                    <div class="sacred-image-frame" id="santo-image-frame" style="display:none;">
+                        <img id="santo-display-image" src="" alt="Arte do Santo">
+                    </div>
+
                     <div class="main-text" id="santo-historia">
                         <p class="loading-text">Buscando a história do santo...</p>
                     </div>
@@ -528,6 +532,7 @@
             const dia = parseInt(parts[2], 10);
 
             document.getElementById('santo-title').textContent = 'Carregando...';
+            document.getElementById('santo-image-frame').style.display = 'none';
             document.getElementById('santo-historia').innerHTML = '<p class="loading-text">Buscando a história...</p>';
 
             try {
@@ -539,6 +544,12 @@
                 if (data && data.length > 0 && data[0].nome_santo) {
                     const santo = data[0];
                     document.getElementById('santo-title').textContent = santo.nome_santo;
+                    
+                    if (santo.imagem_url) {
+                        document.getElementById('santo-display-image').src = santo.imagem_url;
+                        document.getElementById('santo-image-frame').style.display = 'block';
+                    }
+                    
                     document.getElementById('santo-historia').innerHTML = santo.historia_completa;
                     document.getElementById('santo-virtude').innerHTML = santo.virtude_reflexao;
                     document.getElementById('santo-oracao').innerHTML = santo.oracao;
@@ -555,7 +566,7 @@
         }
 
         // -----------------------------------------
-        // LÓGICA DA BÍBLIA (RESTAURADA E COMPLETA!)
+        // LÓGICA DA BÍBLIA
         // -----------------------------------------
         const bookChapters = {
             'genesis': 50, 'exodo': 40, 'levitico': 27, 'numeros': 36, 'deuteronomio': 34,
