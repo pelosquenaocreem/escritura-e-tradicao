@@ -138,11 +138,11 @@
             margin-bottom: 25px;
         }
         
-        /* MOLDURA ÚNICA PADRONIZADA COM LEGENDA */
+        /* MOLDURA ÚNICA PADRONIZADA COM LEGENDA AJUSTÁVEL */
         .sacred-image-frame {
             display: flex;
             flex-direction: column;
-            max-width: 350px;
+            max-width: 360px;
             width: 100%;
             margin: 0 auto 30px auto;
             border-radius: 8px;
@@ -154,7 +154,7 @@
 
         .sacred-image-box {
             width: 100%;
-            max-height: 430px;
+            max-height: 440px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -165,7 +165,7 @@
         .sacred-image-box img {
             width: 100%;
             height: auto;
-            max-height: 430px;
+            max-height: 440px;
             object-fit: contain;
             display: block;
         }
@@ -174,11 +174,14 @@
             background-color: var(--primary-burgundy);
             color: #FFF;
             font-family: 'Cinzel', serif;
-            font-size: 0.92rem;
-            padding: 10px 15px;
+            font-size: 0.88rem;
+            line-height: 1.4;
+            padding: 10px 14px;
             text-align: center;
             letter-spacing: 0.5px;
             border-top: 2px solid var(--accent-gold);
+            word-wrap: break-word;
+            white-space: normal;
         }
 
         .main-text {
@@ -455,7 +458,6 @@
                 <article class="content-card">
                     <h2 class="section-title" id="santo-title">Carregando Santo...</h2>
                     
-                    <!-- Moldura Única Padronizada com Legenda Obrigatória -->
                     <div class="sacred-image-frame" id="santo-image-frame" style="display:none;">
                         <div class="sacred-image-box">
                             <img id="santo-display-image" src="" alt="Arte do Santo" onerror="this.parentElement.parentElement.style.display='none';">
@@ -574,16 +576,18 @@
                     document.getElementById('santo-title').textContent = santo.nome_santo;
                     
                     if (santo.imagem_url && santo.imagem_url.trim() !== "") {
-                        // Pega sempre apenas o primeiro item (caso exista vírgula)
                         const primeiroItem = santo.imagem_url.split(',')[0].trim();
                         const partesItem = primeiroItem.split('|');
                         const url = partesItem[0].trim();
                         
-                        // Se tiver legenda gravada usa ela; se não tiver (nos dias antigos), usa o nome principal do santo antes da vírgula
-                        const legenda = partesItem[1] ? partesItem[1].trim() : santo.nome_santo.split(',')[0].split(' e ')[0].trim();
+                        // Limpa qualquer parêntese cortado ou título sobrando para a legenda ficar limpa
+                        let legendaBruta = partesItem[1] ? partesItem[1].trim() : santo.nome_santo.split(',')[0].split('(')[0].split(' e ')[0].trim();
+                        if (legendaBruta.includes('(') && !legendaBruta.includes(')')) {
+                            legendaBruta = legendaBruta.split('(')[0].trim();
+                        }
 
                         document.getElementById('santo-display-image').src = url;
-                        document.getElementById('santo-image-caption').textContent = legenda;
+                        document.getElementById('santo-image-caption').textContent = legendaBruta;
                         document.getElementById('santo-image-frame').style.display = 'flex';
                     }
                     
