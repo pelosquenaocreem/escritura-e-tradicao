@@ -138,20 +138,13 @@
             margin-bottom: 25px;
         }
         
-        /* GALERIA DE SANTOS (SUPORTA 1 OU 2 LADO A LADO) */
-        .santos-gallery {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 25px;
-            margin: 0 auto 30px auto;
-            flex-wrap: wrap;
-        }
-
+        /* MOLDURA ÚNICA PADRONIZADA COM LEGENDA */
         .sacred-image-frame {
-            text-align: center;
-            max-width: 340px;
+            display: flex;
+            flex-direction: column;
+            max-width: 350px;
             width: 100%;
+            margin: 0 auto 30px auto;
             border-radius: 8px;
             overflow: hidden;
             border: 3px solid var(--accent-gold-light);
@@ -159,13 +152,33 @@
             background-color: #EFE8D8;
         }
 
-        .sacred-image-frame img {
+        .sacred-image-box {
+            width: 100%;
+            max-height: 430px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: #E5DCC5;
+        }
+
+        .sacred-image-box img {
             width: 100%;
             height: auto;
-            max-height: 420px;
+            max-height: 430px;
             object-fit: contain;
             display: block;
-            margin: 0 auto;
+        }
+
+        .sacred-caption {
+            background-color: var(--primary-burgundy);
+            color: #FFF;
+            font-family: 'Cinzel', serif;
+            font-size: 0.92rem;
+            padding: 10px 15px;
+            text-align: center;
+            letter-spacing: 0.5px;
+            border-top: 2px solid var(--accent-gold);
         }
 
         .main-text {
@@ -389,8 +402,10 @@
                 <article class="content-card">
                     <h2 class="section-title" id="display-title">Carregando...</h2>
                     
-                    <div class="sacred-image-frame" id="image-frame" style="display:none; margin: 0 auto 30px auto;">
-                        <img id="display-image" src="" alt="Arte Sagrada" onerror="this.parentElement.style.display='none';">
+                    <div class="sacred-image-frame" id="image-frame" style="display:none;">
+                        <div class="sacred-image-box">
+                            <img id="display-image" src="" alt="Arte Sagrada" onerror="this.parentElement.parentElement.style.display='none';">
+                        </div>
                     </div>
 
                     <div class="main-text" id="display-text">
@@ -440,8 +455,13 @@
                 <article class="content-card">
                     <h2 class="section-title" id="santo-title">Carregando Santo...</h2>
                     
-                    <!-- Galeria dinâmica que coloca 1 ou 2 santos lado a lado -->
-                    <div class="santos-gallery" id="santo-gallery" style="display:none;"></div>
+                    <!-- Moldura Única Padronizada com Legenda Obrigatória -->
+                    <div class="sacred-image-frame" id="santo-image-frame" style="display:none;">
+                        <div class="sacred-image-box">
+                            <img id="santo-display-image" src="" alt="Arte do Santo" onerror="this.parentElement.parentElement.style.display='none';">
+                        </div>
+                        <div class="sacred-caption" id="santo-image-caption"></div>
+                    </div>
 
                     <div class="main-text" id="santo-historia">
                         <p class="loading-text">Buscando a história do santo...</p>
@@ -540,9 +560,7 @@
             const dia = parseInt(parts[2], 10);
 
             document.getElementById('santo-title').textContent = 'Carregando...';
-            const gallery = document.getElementById('santo-gallery');
-            gallery.style.display = 'none';
-            gallery.innerHTML = '';
+            document.getElementById('santo-image-frame').style.display = 'none';
             document.getElementById('santo-historia').innerHTML = '<p class="loading-text">Buscando a história...</p>';
 
             try {
@@ -556,23 +574,17 @@
                     document.getElementById('santo-title').textContent = santo.nome_santo;
                     
                     if (santo.imagem_url && santo.imagem_url.trim() !== "") {
-                        // Separa os links caso haja mais de um (separados por vírgula)
-                        const urls = santo.imagem_url.split(',').map(u => u.trim()).filter(u => u !== "");
+                        // Pega sempre apenas o primeiro item (caso exista vírgula)
+                        const primeiroItem = santo.imagem_url.split(',')[0].trim();
+                        const partesItem = primeiroItem.split('|');
+                        const url = partesItem[0].trim();
                         
-                        urls.forEach(url => {
-                            const frame = document.createElement('div');
-                            frame.className = 'sacred-image-frame';
-                            
-                            const img = document.createElement('img');
-                            img.src = url;
-                            img.alt = 'Arte do Santo';
-                            img.onerror = function() { frame.style.display = 'none'; };
-                            
-                            frame.appendChild(img);
-                            gallery.appendChild(frame);
-                        });
-                        
-                        gallery.style.display = 'flex';
+                        // Se tiver legenda gravada usa ela; se não tiver (nos dias antigos), usa o nome principal do santo antes da vírgula
+                        const legenda = partesItem[1] ? partesItem[1].trim() : santo.nome_santo.split(',')[0].split(' e ')[0].trim();
+
+                        document.getElementById('santo-display-image').src = url;
+                        document.getElementById('santo-image-caption').textContent = legenda;
+                        document.getElementById('santo-image-frame').style.display = 'flex';
                     }
                     
                     document.getElementById('santo-historia').innerHTML = santo.historia_completa;
@@ -643,7 +655,7 @@
                     
                     if (cap.imagem_url && cap.imagem_url.trim() !== "") {
                         document.getElementById('display-image').src = cap.imagem_url;
-                        document.getElementById('image-frame').style.display = 'block';
+                        document.getElementById('image-frame').style.display = 'flex';
                     } else {
                         document.getElementById('image-frame').style.display = 'none';
                     }
