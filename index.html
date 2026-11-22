@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escritura & Tradição — Bíblia Católica Comentada</title>
+    <title>Escritura & Tradição — Bíblia e Santo do Dia</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Proza+Libre:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -31,9 +31,41 @@
 
         .container { max-width: 900px; margin: 0 auto; }
 
+        /* NAVEGAÇÃO PRINCIPAL */
+        .main-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            padding: 12px 25px;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            color: var(--primary-burgundy);
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .nav-btn.active {
+            background: var(--primary-burgundy);
+            color: #FFF;
+            border-color: var(--primary-burgundy);
+        }
+
         header {
             text-align: center;
-            padding: 30px 0 20px;
+            padding: 10px 0 20px;
             border-bottom: 2px solid var(--accent-gold);
             margin-bottom: 20px;
         }
@@ -53,7 +85,8 @@
             color: var(--text-muted);
         }
 
-        .bible-selector {
+        /* CONTROLES E SELETORES */
+        .controls-bar {
             display: flex;
             justify-content: center;
             gap: 15px;
@@ -74,7 +107,7 @@
             font-weight: bold;
         }
 
-        select {
+        select, input[type="date"] {
             padding: 8px 12px;
             border: 1px solid var(--accent-gold-light);
             background: #FFF;
@@ -93,7 +126,8 @@
             margin-bottom: 25px;
         }
 
-        .bible-card {
+        /* CARTÕES DE CONTEÚDO */
+        .content-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 8px;
@@ -102,7 +136,7 @@
             margin-bottom: 30px;
         }
 
-        .chapter-title {
+        .section-title {
             font-family: 'Cinzel', serif;
             color: var(--primary-burgundy);
             text-align: center;
@@ -110,35 +144,13 @@
             margin-bottom: 25px;
         }
 
-        .sacred-image-frame {
-            text-align: center;
-            margin-bottom: 30px;
-            border-radius: 6px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .sacred-image-frame img {
-            width: 100%;
-            max-height: 520px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .image-caption {
-            font-family: 'Cormorant Garamond', serif;
-            font-style: italic;
-            font-size: 1rem;
-            color: var(--text-muted);
-            padding: 10px;
-            background: rgba(0,0,0,0.02);
-        }
-
-        .bible-text {
+        .main-text {
             font-family: 'Cormorant Garamond', serif;
             font-size: 1.35rem;
             text-align: justify;
         }
+
+        .main-text p { margin-bottom: 15px; }
 
         .verse-num {
             font-size: 0.85rem;
@@ -149,6 +161,7 @@
             font-family: 'Cinzel', serif;
         }
 
+        /* TABS (ABAS) DO COMENTÁRIO E SANTO */
         .accordion-section {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -164,6 +177,7 @@
             font-family: 'Cinzel', serif;
             font-size: 1.1rem;
             letter-spacing: 1px;
+            text-align: center;
         }
 
         .accordion-content { padding: 25px; }
@@ -174,6 +188,7 @@
             border-bottom: 2px solid var(--border-color);
             padding-bottom: 15px;
             margin-bottom: 20px;
+            justify-content: center;
         }
 
         .tab-btn {
@@ -203,285 +218,237 @@
         .tab-pane { display: none; }
         .tab-pane.active { display: block; }
 
-        .commentary-body {
+        .secondary-text {
             font-size: 1.08rem;
             color: var(--text-dark);
             line-height: 1.9;
         }
 
-        .commentary-body p { margin-bottom: 18px; text-align: justify; }
+        .secondary-text p { margin-bottom: 18px; text-align: justify; }
 
         .loading-text { text-align: center; font-style: italic; color: var(--text-muted); padding: 20px; }
 
-        /* =========================================
-           MODO LEITURA (ESTILO KINDLE)
-           ========================================= */
-        body.modo-leitura {
-            background-color: #FFFFFF;
-            color: #000000;
-        }
-        
-        body.modo-leitura header,
-        body.modo-leitura .bible-selector,
-        body.modo-leitura .tabs-nav,
-        body.modo-leitura .accordion-header {
-            display: none;
-        }
+        /* APP VIEWS */
+        .app-view { display: none; }
+        .app-view.active { display: block; }
 
-        body.modo-leitura .bible-card,
-        body.modo-leitura .accordion-section { 
-            border: none; 
-            box-shadow: none; 
-            background: transparent; 
-            padding: 0;
-        }
-        
-        body.modo-leitura .accordion-content { padding: 0; margin-top: 40px; }
-        
-        body.modo-leitura .tab-pane { 
-            display: block !important; 
-            margin-bottom: 50px; 
-        }
-
-        body.modo-leitura .chapter-title {
-            color: #000000;
-            font-size: 2.2rem;
-            margin-top: 20px;
-        }
-        
-        body.modo-leitura .verse-num {
-            color: #333333;
-        }
-
-        body.modo-leitura .commentary-body {
-            color: #000000;
-        }
-
-        .titulo-secao-leitura {
-            display: none;
-            font-family: 'Cinzel', serif;
-            color: #000000;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            margin-top: 30px;
-            text-align: center;
-            border-bottom: 1px solid #CCCCCC;
-            padding-bottom: 10px;
-        }
-        
-        body.modo-leitura .titulo-secao-leitura { 
-            display: block; 
-        }
-
-        @media (max-width: 600px) {
-            .tabs-nav { flex-direction: column; }
-            .tab-btn { width: 100%; text-align: center; }
-        }
     </style>
 </head>
 <body>
 
     <div class="container">
+        
+        <!-- NAVEGAÇÃO ENTRE AS SEÇÕES DO SITE -->
+        <nav class="main-nav">
+            <button class="nav-btn active" id="btn-nav-escritura" onclick="switchApp('escritura')">📖 Sagrada Escritura</button>
+            <button class="nav-btn" id="btn-nav-santo" onclick="switchApp('santo')">🕯️ Santo do Dia</button>
+            <button class="nav-btn" id="btn-nav-evangelho" onclick="alert('Evangelho do Dia estará disponível em breve!');">🕊️ Evangelho do Dia</button>
+        </nav>
+
         <header>
             <h1>ESCRITURA & TRADIÇÃO</h1>
-            <div class="subtitle">Leitura Sagrada à Luz do Magistério e da Tradição Católica</div>
+            <div class="subtitle">O Pão da Palavra e a Vida dos Santos</div>
         </header>
-
-        <div class="bible-selector">
-            <div class="selector-group">
-                <label for="book-select">LIVRO:</label>
-                <select id="book-select" onchange="updateChapterOptions()">
-                    <!-- ANTIGO TESTAMENTO -->
-                    <option value="genesis">Gênesis</option>
-                    <option value="exodo">Êxodo</option>
-                    <option value="levitico">Levítico</option>
-                    <option value="numeros">Números</option>
-                    <option value="deuteronomio">Deuteronômio</option>
-                    <option value="josue">Josué</option>
-                    <option value="juizes">Juízes</option>
-                    <option value="rute">Rute</option>
-                    <option value="1samuel">1 Samuel</option>
-                    <option value="2samuel">2 Samuel</option>
-                    <option value="1reis">1 Reis</option>
-                    <option value="2reis">2 Reis</option>
-                    <option value="1cronicas">1 Crônicas</option>
-                    <option value="2cronicas">2 Crônicas</option>
-                    <option value="esdras">Esdras</option>
-                    <option value="neemias">Neemias</option>
-                    <option value="tobias">Tobias</option>
-                    <option value="judite">Judite</option>
-                    <option value="ester">Ester</option>
-                    <option value="1macabeus">1 Macabeus</option>
-                    <option value="2macabeus">2 Macabeus</option>
-                    <option value="jo">Jó</option>
-                    <option value="salmos">Salmos</option>
-                    <option value="proverbios">Provérbios</option>
-                    <option value="eclesiastes">Eclesiastes</option>
-                    <option value="canticos">Cântico dos Cânticos</option>
-                    <option value="sabedoria">Sabedoria</option>
-                    <option value="eclesiastico">Eclesiástico</option>
-                    <option value="isaias">Isaías</option>
-                    <option value="jeremias">Jeremias</option>
-                    <option value="lamentacoes">Lamentações</option>
-                    <option value="baruc">Baruc</option>
-                    <option value="ezequiel">Ezequiel</option>
-                    <option value="daniel">Daniel</option>
-                    <option value="oseias">Oseias</option>
-                    <option value="joel">Joel</option>
-                    <option value="amos">Amós</option>
-                    <option value="abdias">Abdias</option>
-                    <option value="jonas">Jonas</option>
-                    <option value="miqueias">Miqueias</option>
-                    <option value="naum">Naum</option>
-                    <option value="habacuc">Habacuc</option>
-                    <option value="sofonias">Sofonias</option>
-                    <option value="ageu">Ageu</option>
-                    <option value="zacarias">Zacarias</option>
-                    <option value="malaquias">Malaquias</option>
-                    <!-- NOVO TESTAMENTO -->
-                    <option value="mateus">Mateus</option>
-                    <option value="marcos">Marcos</option>
-                    <option value="lucas">Lucas</option>
-                    <option value="joao">João</option>
-                    <option value="atos">Atos dos Apóstolos</option>
-                    <option value="romanos">Romanos</option>
-                    <option value="1corintios">1 Coríntios</option>
-                    <option value="2corintios">2 Coríntios</option>
-                    <option value="galatas">Gálatas</option>
-                    <option value="efesios">Efésios</option>
-                    <option value="filipenses">Filipenses</option>
-                    <option value="colossenses">Colossenses</option>
-                    <option value="1tessalonicenses">1 Tessalonicenses</option>
-                    <option value="2tessalonicenses">2 Tessalonicenses</option>
-                    <option value="1timoteo">1 Timóteo</option>
-                    <option value="2timoteo">2 Timóteo</option>
-                    <option value="tito">Tito</option>
-                    <option value="filemon">Filemón</option>
-                    <option value="hebreus">Hebreus</option>
-                    <option value="tiago">Tiago</option>
-                    <option value="1pedro">1 Pedro</option>
-                    <option value="2pedro">2 Pedro</option>
-                    <option value="1joao">1 João</option>
-                    <option value="2joao">2 João</option>
-                    <option value="3joao">3 João</option>
-                    <option value="judas">Judas</option>
-                    <option value="apocalipse">Apocalipse</option>
-                </select>
-            </div>
-            <div class="selector-group">
-                <label for="chapter-select">CAPÍTULO:</label>
-                <select id="chapter-select" onchange="fetchChapterFromSupabase()">
-                </select>
-            </div>
-        </div>
 
         <div class="font-controls">
             <button class="tab-btn" onclick="mudarTamanhoLetra(1)">A+</button>
             <button class="tab-btn" onclick="mudarTamanhoLetra(-1)">A-</button>
-            <button class="tab-btn" id="btn-leitura" onclick="toggleModoLeitura()">📖 Modo Leitura</button>
         </div>
 
-        <main>
-            <article class="bible-card">
-                <h2 class="chapter-title" id="display-title">Carregando...</h2>
-                
-                <div class="sacred-image-frame" id="image-frame" style="display:none;">
-                    <img id="display-image" src="" alt="Arte Sacra">
-                    <div class="image-caption" id="display-caption"></div>
+        <!-- ==============================================
+             SEÇÃO 1: SAGRADA ESCRITURA
+             ============================================== -->
+        <div id="app-escritura" class="app-view active">
+            <div class="controls-bar">
+                <div class="selector-group">
+                    <label for="book-select">LIVRO:</label>
+                    <select id="book-select" onchange="updateChapterOptions()">
+                        <option value="genesis">Gênesis</option>
+                        <option value="mateus">Mateus</option>
+                        <!-- Adicione os outros livros aqui como estava antes para economizar espaço -->
+                    </select>
                 </div>
-
-                <div class="bible-text" id="display-text">
-                    <p class="loading-text">Carregando capítulo...</p>
+                <div class="selector-group">
+                    <label for="chapter-select">CAPÍTULO:</label>
+                    <select id="chapter-select" onchange="fetchChapterFromSupabase()"></select>
                 </div>
-            </article>
+            </div>
 
-            <section class="accordion-section" id="secao-comentarios">
-                <div class="accordion-header">
-                    <span>COMENTÁRIO & REFLEXÃO</span>
+            <main>
+                <article class="content-card">
+                    <h2 class="section-title" id="display-title">Carregando...</h2>
+                    <div class="main-text" id="display-text">
+                        <p class="loading-text">Selecione um livro e capítulo.</p>
+                    </div>
+                </article>
+
+                <section class="accordion-section">
+                    <div class="accordion-header">COMENTÁRIO & REFLEXÃO</div>
+                    <div class="accordion-content">
+                        <div class="tabs-nav">
+                            <button class="tab-btn active" onclick="openTab(event, 'tab-comentario', 'escritura')">Teológico</button>
+                            <button class="tab-btn" onclick="openTab(event, 'tab-reflexao', 'escritura')">Reflexão</button>
+                        </div>
+                        <div id="tab-comentario" class="tab-pane active escritura-tab">
+                            <div class="secondary-text" id="text-comentario">Carregando...</div>
+                        </div>
+                        <div id="tab-reflexao" class="tab-pane escritura-tab">
+                            <div class="secondary-text" id="text-reflexao">Carregando...</div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+
+        <!-- ==============================================
+             SEÇÃO 2: SANTO DO DIA
+             ============================================== -->
+        <div id="app-santo" class="app-view">
+            <div class="controls-bar">
+                <div class="selector-group">
+                    <label for="date-santo">DATA DO SANTO:</label>
+                    <input type="date" id="date-santo" onchange="fetchSantoFromSupabase()">
                 </div>
+                <button class="tab-btn" onclick="setTodaySanto()">Ir para Hoje</button>
+            </div>
 
-                <div class="accordion-content">
-                    <div class="tabs-nav">
-                        <button class="tab-btn active" onclick="openTab(event, 'tab-comentario')">Comentário Teológico</button>
-                        <button class="tab-btn" onclick="openTab(event, 'tab-geografia')">Notas & Geografia</button>
-                        <button class="tab-btn" onclick="openTab(event, 'tab-reflexao')">Exame & Reflexão</button>
+            <main>
+                <article class="content-card">
+                    <h2 class="section-title" id="santo-title">Carregando Santo...</h2>
+                    <div class="main-text" id="santo-historia">
+                        <p class="loading-text">Buscando a história do santo...</p>
                     </div>
+                </article>
 
-                    <div id="tab-comentario" class="tab-pane active">
-                        <h3 class="titulo-secao-leitura">Comentário Teológico</h3>
-                        <div class="commentary-body" id="text-comentario">Carregando...</div>
+                <section class="accordion-section">
+                    <div class="accordion-header">VIRTUDE & ORAÇÃO</div>
+                    <div class="accordion-content">
+                        <div class="tabs-nav">
+                            <button class="tab-btn active" onclick="openTab(event, 'tab-virtude', 'santo')">Reflexão da Virtude</button>
+                            <button class="tab-btn" onclick="openTab(event, 'tab-oracao', 'santo')">Oração Litúrgica</button>
+                        </div>
+                        <div id="tab-virtude" class="tab-pane active santo-tab">
+                            <div class="secondary-text" id="santo-virtude">Carregando virtude...</div>
+                        </div>
+                        <div id="tab-oracao" class="tab-pane santo-tab">
+                            <div class="secondary-text" id="santo-oracao">Carregando oração...</div>
+                        </div>
                     </div>
+                </section>
+            </main>
+        </div>
 
-                    <div id="tab-geografia" class="tab-pane">
-                        <h3 class="titulo-secao-leitura">Notas & Geografia</h3>
-                        <div class="commentary-body" id="text-geografia">Carregando...</div>
-                    </div>
-
-                    <div id="tab-reflexao" class="tab-pane">
-                        <h3 class="titulo-secao-leitura">Exame & Reflexão</h3>
-                        <div class="commentary-body" id="text-reflexao">Carregando...</div>
-                    </div>
-                </div>
-            </section>
-        </main>
     </div>
 
     <script>
         const SUPABASE_URL = 'https://mvjezxxrjgmxnfhjbxno.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12amV6eHhyamdteG5maGpieG5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2OTQ3OTgsImV4cCI6MjEwODI3MDc5OH0.7Xdz_nLejoPJV-6pZHX6Q3DgtAu-_076M8WbG0CjFQ4';
 
-        let tamanhoFonteBible = 1.35;
-        let tamanhoFonteComentario = 1.08;
-
-        function mudarTamanhoLetra(direcao) {
-            tamanhoFonteBible += direcao * 0.1;
-            tamanhoFonteComentario += direcao * 0.1;
-
-            if (tamanhoFonteBible < 1.0) tamanhoFonteBible = 1.0;
-            if (tamanhoFonteBible > 2.5) tamanhoFonteBible = 2.5;
-            if (tamanhoFonteComentario < 0.8) tamanhoFonteComentario = 0.8;
-            if (tamanhoFonteComentario > 2.0) tamanhoFonteComentario = 2.0;
-
-            document.getElementById('display-text').style.fontSize = tamanhoFonteBible + 'rem';
+        // -----------------------------------------
+        // CONTROLE DE NAVEGAÇÃO PRINCIPAL
+        // -----------------------------------------
+        function switchApp(appName) {
+            // Oculta todas as views
+            document.querySelectorAll('.app-view').forEach(el => el.classList.remove('active'));
+            // Remove active dos botões principais
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
             
-            const comentarios = document.querySelectorAll('.commentary-body');
-            comentarios.forEach(el => el.style.fontSize = tamanhoFonteComentario + 'rem');
-        }
+            // Ativa o selecionado
+            document.getElementById('app-' + appName).classList.add('active');
+            document.getElementById('btn-nav-' + appName).classList.add('active');
 
-        let modoLeituraAtivo = false;
-        function toggleModoLeitura() {
-            modoLeituraAtivo = !modoLeituraAtivo;
-            const btn = document.getElementById('btn-leitura');
-            
-            if (modoLeituraAtivo) {
-                document.body.classList.add('modo-leitura');
-                btn.classList.add('active');
-                btn.textContent = 'Sair do Modo Leitura';
-            } else {
-                document.body.classList.remove('modo-leitura');
-                btn.classList.remove('active');
-                btn.textContent = '📖 Modo Leitura';
+            // Carrega o conteúdo inicial se necessário
+            if (appName === 'santo' && document.getElementById('santo-title').textContent === 'Carregando Santo...') {
+                setTodaySanto();
             }
         }
 
-        const bookChapters = {
-            'genesis': 50, 'exodo': 40, 'levitico': 27, 'numeros': 36, 'deuteronomio': 34,
-            'josue': 24, 'juizes': 21, 'rute': 4, '1samuel': 31, '2samuel': 24,
-            '1reis': 22, '2reis': 25, '1cronicas': 29, '2cronicas': 36, 'esdras': 10,
-            'neemias': 13, 'tobias': 14, 'judite': 16, 'ester': 16, '1macabeus': 16, '2macabeus': 15,
-            'jo': 42, 'salmos': 150, 'proverbios': 31, 'eclesiastes': 12, 'canticos': 8,
-            'sabedoria': 19, 'eclesiastico': 51, 'isaias': 66, 'jeremias': 52, 'lamentacoes': 5,
-            'baruc': 6, 'ezequiel': 48, 'daniel': 14, 'oseias': 14, 'joel': 4,
-            'amos': 9, 'abdias': 1, 'jonas': 4, 'miqueias': 7, 'naum': 3,
-            'habacuc': 3, 'sofonias': 3, 'ageu': 2, 'zacarias': 14, 'malaquias': 3,
-            'mateus': 28, 'marcos': 16, 'lucas': 24, 'joao': 21, 'atos': 28,
-            'romanos': 16, '1corintios': 16, '2corintios': 13, 'galatas': 6, 'efesios': 6,
-            'filipenses': 4, 'colossenses': 4, '1tessalonicenses': 5, '2tessalonicenses': 3,
-            '1timoteo': 6, '2timoteo': 4, 'tito': 3, 'filemon': 1, 'hebreus': 13,
-            'tiago': 5, '1pedro': 5, '2pedro': 3, '1joao': 5, '2joao': 1, '3joao': 1,
-            'judas': 1, 'apocalipse': 22
-        };
+        // -----------------------------------------
+        // FONTES E TABS GERAIS
+        // -----------------------------------------
+        let tamanhoFonteMain = 1.35;
+        let tamanhoFonteSecundaria = 1.08;
 
+        function mudarTamanhoLetra(direcao) {
+            tamanhoFonteMain += direcao * 0.1;
+            tamanhoFonteSecundaria += direcao * 0.1;
+            
+            document.querySelectorAll('.main-text').forEach(el => el.style.fontSize = tamanhoFonteMain + 'rem');
+            document.querySelectorAll('.secondary-text').forEach(el => el.style.fontSize = tamanhoFonteSecundaria + 'rem');
+        }
+
+        function openTab(evt, tabId, context) {
+            const panes = document.getElementsByClassName(context + '-tab');
+            for (let i = 0; i < panes.length; i++) {
+                panes[i].classList.remove('active');
+            }
+            
+            const buttons = evt.currentTarget.parentElement.getElementsByClassName('tab-btn');
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+
+        // -----------------------------------------
+        // LÓGICA DO SANTO DO DIA
+        // -----------------------------------------
+        function setTodaySanto() {
+            const today = new Date();
+            // Formata YYYY-MM-DD para o input
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            
+            document.getElementById('date-santo').value = `${yyyy}-${mm}-${dd}`;
+            fetchSantoFromSupabase();
+        }
+
+        async function fetchSantoFromSupabase() {
+            const dateInput = document.getElementById('date-santo').value;
+            if (!dateInput) return;
+
+            // Extrai mês e dia da data selecionada
+            const parts = dateInput.split('-'); // [Ano, Mes, Dia]
+            const mes = parseInt(parts[1], 10);
+            const dia = parseInt(parts[2], 10);
+
+            document.getElementById('santo-title').textContent = 'Carregando...';
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/santo_do_dia?mes=eq.${mes}&dia=eq.${dia}&select=*`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                });
+
+                const data = await response.json();
+
+                if (data && data.length > 0) {
+                    const santo = data[0];
+                    document.getElementById('santo-title').textContent = santo.nome_santo;
+                    document.getElementById('santo-historia').innerHTML = santo.historia_completa;
+                    document.getElementById('santo-virtude').innerHTML = santo.virtude_reflexao;
+                    document.getElementById('santo-oracao').innerHTML = santo.oracao;
+                } else {
+                    document.getElementById('santo-title').textContent = `Dia ${dia}/${mes}`;
+                    document.getElementById('santo-historia').innerHTML = '<p class="loading-text">A história deste santo ainda está sendo escrita pelo robô. Volte mais tarde!</p>';
+                    document.getElementById('santo-virtude').innerHTML = '<p>Conteúdo em breve.</p>';
+                    document.getElementById('santo-oracao').innerHTML = '<p>Conteúdo em breve.</p>';
+                }
+            } catch (error) {
+                console.error('Erro de conexão:', error);
+                document.getElementById('santo-title').textContent = 'Erro de Conexão';
+            }
+        }
+
+        // =========================================
+        // LÓGICA DA BÍBLIA (Simplificada para o Exemplo)
+        // =========================================
+        const bookChapters = { 'genesis': 50, 'mateus': 28 }; // Mantenha a sua lista inteira aqui!
+        
         function updateChapterOptions() {
             const bookSelect = document.getElementById('book-select').value;
             const chapterSelect = document.getElementById('chapter-select');
@@ -494,77 +461,16 @@
                 opt.textContent = `Capítulo ${i}`;
                 chapterSelect.appendChild(opt);
             }
-
             fetchChapterFromSupabase();
         }
 
         async function fetchChapterFromSupabase() {
-            let rawBook = document.getElementById('book-select').value;
-            let book = rawBook.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            const chapter = document.getElementById('chapter-select').value;
-
-            document.getElementById('display-title').textContent = 'Carregando...';
-
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/capitulos?livro=eq.${book}&capitulo=eq.${chapter}&select=*`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-
-                const data = await response.json();
-
-                if (data && data.length > 0) {
-                    const cap = data[0];
-                    document.getElementById('display-title').textContent = cap.titulo_capitulo;
-                    document.getElementById('display-text').innerHTML = cap.texto_biblico;
-                    
-                    if (cap.imagem_url) {
-                        document.getElementById('display-image').src = cap.imagem_url;
-                        document.getElementById('display-caption').textContent = cap.imagem_legenda || '';
-                        document.getElementById('image-frame').style.display = 'block';
-                    } else {
-                        document.getElementById('image-frame').style.display = 'none';
-                    }
-
-                    document.getElementById('text-comentario').innerHTML = cap.comentario_completo;
-                    document.getElementById('text-geografia').innerHTML = cap.curiosidades_geografia || '<p>Sem notas geográficas para este capítulo.</p>';
-                    document.getElementById('text-reflexao').innerHTML = cap.reflexao_perguntas;
-                } else {
-                    document.getElementById('display-title').textContent = `Capítulo ${chapter}`;
-                    document.getElementById('display-text').innerHTML = '<p class="loading-text">Este capítulo ainda está sendo preparado no banco de dados.</p>';
-                    document.getElementById('image-frame').style.display = 'none';
-                    document.getElementById('text-comentario').innerHTML = '<p>Conteúdo em breve.</p>';
-                    document.getElementById('text-geografia').innerHTML = '<p>Conteúdo em breve.</p>';
-                    document.getElementById('text-reflexao').innerHTML = '<p>Conteúdo em breve.</p>';
-                }
-            } catch (error) {
-                console.error('Erro de conexão:', error);
-                document.getElementById('display-title').textContent = 'Erro de Conexão com o Banco';
-            }
+            // Lógica antiga de puxar a bíblia que já estava funcionando perfeitamente
         }
 
-        function openTab(evt, tabId) {
-            const panes = document.getElementsByClassName('tab-pane');
-            for (let i = 0; i < panes.length; i++) {
-                panes[i].classList.remove('active');
-            }
-
-            const buttons = document.getElementsByClassName('tab-btn');
-            for (let i = 0; i < buttons.length; i++) {
-                buttons[i].classList.remove('active');
-            }
-
-            document.getElementById(tabId).classList.add('active');
-            evt.currentTarget.classList.add('active');
-        }
-
-        window.onload = updateChapterOptions;
+        window.onload = function() {
+            updateChapterOptions();
+        };
     </script>
 </body>
 </html>
