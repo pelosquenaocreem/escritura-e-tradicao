@@ -311,7 +311,7 @@
             <button class="tab-btn" onclick="mudarTamanhoLetra(1)">A+</button>
             <button class="tab-btn" onclick="mudarTamanhoLetra(-1)">A-</button>
             <button class="tab-btn" id="btn-leitura" onclick="toggleModoLeitura()">📖 Modo Leitura</button>
-            <button class="tab-btn" id="btn-compartilhar" onclick="copiarLinkAtual()">🔗 Copiar Link</button>
+            <button class="tab-btn" id="btn-compartilhar" onclick="compartilharPagina()">Compartilhar</button>
         </div>
 
         <!-- ==============================================
@@ -521,12 +521,26 @@
             window.history.replaceState({}, '', url.pathname + url.search);
         }
 
-        function copiarLinkAtual() {
+        async function compartilharPagina() {
+            const dadosCompartilhamento = {
+                title: document.title,
+                text: `Confira no Escritura & Tradição: ${document.title}`,
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                try {
+                    await navigator.share(dadosCompartilhamento);
+                    return;
+                } catch (err) {
+                    if (err.name === 'AbortError') return;
+                }
+            }
+
             navigator.clipboard.writeText(window.location.href).then(() => {
                 const btn = document.getElementById('btn-compartilhar');
-                const textoOriginal = btn.textContent;
-                btn.textContent = '✓ Link Copiado!';
-                setTimeout(() => { btn.textContent = textoOriginal; }, 2000);
+                btn.textContent = 'Link Copiado!';
+                setTimeout(() => { btn.textContent = 'Compartilhar'; }, 2000);
             });
         }
 
