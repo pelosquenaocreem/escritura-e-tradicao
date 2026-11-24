@@ -118,6 +118,7 @@
             justify-content: center;
             gap: 10px;
             margin-bottom: 25px;
+            flex-wrap: wrap;
         }
 
         /* CARTÕES DE CONTEÚDO */
@@ -298,7 +299,7 @@
         <nav class="main-nav">
             <button class="nav-btn active" id="btn-nav-escritura" onclick="switchApp('escritura')">📖 Sagrada Escritura</button>
             <button class="nav-btn" id="btn-nav-santo" onclick="switchApp('santo')">🕯️ Santo do Dia</button>
-            <button class="nav-btn" id="btn-nav-evangelho" onclick="alert('Evangelho do Dia estará disponível em breve!');">🕊️ Evangelho do Dia</button>
+            <button class="nav-btn" id="btn-nav-evangelho" onclick="switchApp('evangelho')">🕊️ Evangelho do Dia</button>
         </nav>
 
         <header>
@@ -310,6 +311,7 @@
             <button class="tab-btn" onclick="mudarTamanhoLetra(1)">A+</button>
             <button class="tab-btn" onclick="mudarTamanhoLetra(-1)">A-</button>
             <button class="tab-btn" id="btn-leitura" onclick="toggleModoLeitura()">📖 Modo Leitura</button>
+            <button class="tab-btn" id="btn-compartilhar" onclick="copiarLinkAtual()">🔗 Copiar Link</button>
         </div>
 
         <!-- ==============================================
@@ -319,7 +321,7 @@
             <div class="controls-bar">
                 <div class="selector-group">
                     <label for="book-select">LIVRO:</label>
-                    <select id="book-select" onchange="updateChapterOptions()">
+                    <select id="book-select" onchange="updateChapterOptions(1)">
                         <option value="genesis">Gênesis</option>
                         <option value="exodo">Êxodo</option>
                         <option value="levitico">Levítico</option>
@@ -490,20 +492,66 @@
             </main>
         </div>
 
+
+        <!-- ==============================================
+             SEÇÃO 3: EVANGELHO DO DIA
+             ============================================== -->
+        <div id="app-evangelho" class="app-view">
+            <main>
+                <article class="content-card">
+                    <h2 class="section-title">🕊️ Evangelho do Dia</h2>
+                    <div class="main-text">
+                        <p class="loading-text">A seção do Evangelho do Dia e Liturgia Diária estará disponível em breve!</p>
+                    </div>
+                </article>
+            </main>
+        </div>
+
     </div>
 
     <script>
         const SUPABASE_URL = 'https://mvjezxxrjgmxnfhjbxno.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12amV6eHhyamdteG5maGpieG5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2OTQ3OTgsImV4cCI6MjEwODI3MDc5OH0.7Xdz_nLejoPJV-6pZHX6Q3DgtAu-_076M8WbG0CjFQ4';
 
-        function switchApp(appName) {
+        function atualizarEnderecoURL(caminho, paramsObj = {}) {
+            const url = new URL(window.location.origin + caminho);
+            for (const [k, v] of Object.entries(paramsObj)) {
+                if (v) url.searchParams.set(k, v);
+            }
+            window.history.replaceState({}, '', url.pathname + url.search);
+        }
+
+        function copiarLinkAtual() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const btn = document.getElementById('btn-compartilhar');
+                const textoOriginal = btn.textContent;
+                btn.textContent = '✓ Link Copiado!';
+                setTimeout(() => { btn.textContent = textoOriginal; }, 2000);
+            });
+        }
+
+        function switchApp(appName, atualizarUrl = true) {
             document.querySelectorAll('.app-view').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
             document.getElementById('app-' + appName).classList.add('active');
             document.getElementById('btn-nav-' + appName).classList.add('active');
 
-            if (appName === 'santo' && document.getElementById('santo-title').textContent === 'Carregando Santo...') {
-                setTodaySanto();
+            if (appName === 'santo') {
+                document.title = 'Santo do Dia — Escritura & Tradição';
+                const dataAtual = document.getElementById('date-santo').value;
+                if (!dataAtual) {
+                    setTodaySanto();
+                } else if (atualizarUrl) {
+                    atualizarEnderecoURL('/santos', { data: dataAtual });
+                }
+            } else if (appName === 'evangelho') {
+                document.title = 'Evangelho do Dia — Escritura & Tradição';
+                if (atualizarUrl) atualizarEnderecoURL('/evangelho');
+            } else {
+                document.title = 'Sagrada Escritura — Escritura & Tradição';
+                const livro = document.getElementById('book-select').value;
+                const cap = document.getElementById('chapter-select').value;
+                if (atualizarUrl) atualizarEnderecoURL('/escritura', { livro: livro, cap: cap });
             }
         }
 
@@ -557,6 +605,9 @@
         async function fetchSantoFromSupabase() {
             const dateInput = document.getElementById('date-santo').value;
             if (!dateInput) return;
+
+            atualizarEnderecoURL('/santos', { data: dateInput });
+
             const parts = dateInput.split('-');
             const mes = parseInt(parts[1], 10);
             const dia = parseInt(parts[2], 10);
@@ -574,13 +625,13 @@
                 if (data && data.length > 0 && data[0].nome_santo) {
                     const santo = data[0];
                     document.getElementById('santo-title').textContent = santo.nome_santo;
+                    document.title = `${santo.nome_santo} — Escritura & Tradição`;
                     
                     if (santo.imagem_url && santo.imagem_url.trim() !== "") {
                         const primeiroItem = santo.imagem_url.split(',')[0].trim();
                         const partesItem = primeiroItem.split('|');
                         const url = partesItem[0].trim();
                         
-                        // Limpa qualquer parêntese cortado ou título sobrando para a legenda ficar limpa
                         let legendaBruta = partesItem[1] ? partesItem[1].trim() : santo.nome_santo.split(',')[0].split('(')[0].split(' e ')[0].trim();
                         if (legendaBruta.includes('(') && !legendaBruta.includes(')')) {
                             legendaBruta = legendaBruta.split('(')[0].trim();
@@ -624,7 +675,7 @@
             'judas': 1, 'apocalipse': 22
         };
         
-        function updateChapterOptions() {
+        function updateChapterOptions(capituloInicial = 1) {
             const bookSelect = document.getElementById('book-select').value;
             const chapterSelect = document.getElementById('chapter-select');
             const totalChapters = bookChapters[bookSelect] || 1;
@@ -636,6 +687,7 @@
                 opt.textContent = `Capítulo ${i}`;
                 chapterSelect.appendChild(opt);
             }
+            chapterSelect.value = String(capituloInicial);
             fetchChapterFromSupabase();
         }
 
@@ -643,6 +695,10 @@
             let rawBook = document.getElementById('book-select').value;
             let book = rawBook.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             const chapter = document.getElementById('chapter-select').value;
+
+            if (document.getElementById('app-escritura').classList.contains('active')) {
+                atualizarEnderecoURL('/escritura', { livro: rawBook, cap: chapter });
+            }
 
             document.getElementById('display-title').textContent = 'Carregando...';
 
@@ -655,6 +711,7 @@
                 if (data && data.length > 0) {
                     const cap = data[0];
                     document.getElementById('display-title').textContent = cap.titulo_capitulo;
+                    document.title = `${cap.titulo_capitulo} — Escritura & Tradição`;
                     document.getElementById('display-text').innerHTML = cap.texto_biblico;
                     
                     if (cap.imagem_url && cap.imagem_url.trim() !== "") {
@@ -679,7 +736,28 @@
         }
 
         window.onload = function() {
-            updateChapterOptions();
+            const path = window.location.pathname.toLowerCase();
+            const params = new URLSearchParams(window.location.search);
+
+            if (path.startsWith('/santo')) {
+                const dataParam = params.get('data');
+                if (dataParam) {
+                    document.getElementById('date-santo').value = dataParam;
+                    switchApp('santo', false);
+                    fetchSantoFromSupabase();
+                } else {
+                    switchApp('santo', false);
+                }
+            } else if (path.startsWith('/evangelho')) {
+                switchApp('evangelho', false);
+            } else {
+                const livroParam = params.get('livro');
+                const capParam = parseInt(params.get('cap'), 10) || 1;
+                if (livroParam && bookChapters[livroParam]) {
+                    document.getElementById('book-select').value = livroParam;
+                }
+                updateChapterOptions(capParam);
+            }
         };
     </script>
 </body>
