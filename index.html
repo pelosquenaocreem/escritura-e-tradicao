@@ -166,20 +166,42 @@
             margin-bottom: 25px;
         }
 
+        .evangelho-cabecalho {
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
         .evangelho-tempo {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--text-muted);
+            font-size: 1.25rem;
+            font-weight: 600;
+            text-transform: none;
+            letter-spacing: 0.2px;
+            line-height: 1.45;
+            margin-bottom: 4px;
+        }
+
+        .evangelho-festa {
             font-family: 'Cinzel', serif;
             color: var(--primary-burgundy);
-            font-size: 1.15rem;
-            font-weight: bold;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-transform: none;
+            letter-spacing: 0.4px;
+            line-height: 1.4;
             margin-bottom: 8px;
         }
 
         .evangelho-ref {
             font-family: 'Cinzel', serif;
             color: var(--accent-gold);
-            font-size: 1.05rem;
-            font-weight: bold;
-            margin-bottom: 20px;
+            font-size: 1.02rem;
+            font-weight: 700;
+            text-transform: none;
+            letter-spacing: 0.3px;
+            margin-top: 4px;
         }
 
         .evangelho-separador {
@@ -193,6 +215,7 @@
             color: var(--primary-burgundy);
             font-size: 1.15rem;
             font-weight: bold;
+            text-transform: none;
             margin-bottom: 4px;
         }
 
@@ -201,6 +224,7 @@
             font-style: italic;
             color: var(--text-muted);
             font-size: 1.1rem;
+            text-transform: none;
             margin-bottom: 18px;
         }
         
@@ -599,6 +623,80 @@
         const SUPABASE_URL = 'https://mvjezxxrjgmxnfhjbxno.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12amV6eHhyamdteG5maGpieG5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2OTQ3OTgsImV4cCI6MjEwODI3MDc5OH0.7Xdz_nLejoPJV-6pZHX6Q3DgtAu-_076M8WbG0CjFQ4';
 
+        const MESES_EXTENSO = {
+            1: 'Janeiro', 2: 'Fevereiro', 3: 'Março', 4: 'Abril',
+            5: 'Maio', 6: 'Junho', 7: 'Julho', 8: 'Agosto',
+            9: 'Setembro', 10: 'Outubro', 11: 'Novembro', 12: 'Dezembro'
+        };
+
+        const DIAS_SEMANA_EXTENSO = {
+            0: 'Domingo', 1: 'Segunda-feira', 2: 'Terça-feira', 3: 'Quarta-feira',
+            4: 'Quinta-feira', 5: 'Sexta-feira', 6: 'Sábado'
+        };
+
+        function normalizarTextoCaixa(texto) {
+            if (!texto) return '';
+            const limpo = texto.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+            if (!limpo) return '';
+
+            const minusculasIgnoradas = new Set([
+                'de', 'da', 'do', 'das', 'dos', 'e', 'em', 'no', 'na', 'nos', 'nas',
+                'a', 'o', 'as', 'os', 'ao', 'aos', 'à', 'às', 'pelo', 'pela', 'pelos', 'pelas'
+            ]);
+
+            const palavras = limpo.toLowerCase().split(' ');
+            return palavras.map((palavra, idx) => {
+                // Mantém algarismos romanos ou ordinais tipo 33ª
+                if (/^\d+ª?$/.test(palavra)) return palavra;
+                const semPont = palavra.replace(/^[“"(«]+|[”")»,.;:!?]+$/g, '');
+                if (idx > 0 && minusculasIgnoradas.has(semPont)) {
+                    return palavra;
+                }
+                return palavra.replace(/^([“"(«]*)([a-zà-ÿ])/, (_, abre, letra) => abre + letra.toUpperCase());
+            }).join(' ');
+        }
+
+        function formatarCabecalhoLiturgico(tempoBruto, ano, mes, dia) {
+            const dtUTC = new Date(Date.UTC(ano, mes - 1, dia));
+            const diaSemana = DIAS_SEMANA_EXTENSO[dtUTC.getUTCDay()] || '';
+            const nomeMes = MESES_EXTENSO[mes] || String(mes);
+            const dataExtenso = `${dia} de ${nomeMes} de ${ano}`;
+
+            const textoLimpo = (tempoBruto || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+
+            // Extrai menção a semana do tempo comum, advento, quaresma ou oitava, se existir
+            const matchSemana = textoLimpo.match(/(\d+[ªº]?\s*semana\s+do\s+tempo\s+comum|\d+[ªº]?\s*semana\s+do\s+advento|\d+[ªº]?\s*semana\s+da\s+quaresma|oitava\s+do\s+natal|oitava\s+da\s+páscoa)/i);
+            const contextoSemana = matchSemana ? normalizarTextoCaixa(matchSemana[1]) : '';
+
+            // Extrai celebração (Solenidade, Festa, Memória) se existir
+            const matchCelebracao = textoLimpo.match(/((?:solenidade|festa|memória\s+obrigatória|memória\s+facultativa|memória)\s+(?:de|da|do|dos|das)\s+.+?)(?:\.|$)/i);
+            const celebracao = matchCelebracao ? normalizarTextoCaixa(matchCelebracao[1].replace(/\.+$/, '')) : '';
+
+            // Linha 1: 1 de Janeiro de 2027 (Sexta-feira da Oitava do Natal)
+            let linha1 = dataExtenso;
+            if (diaSemana && contextoSemana) {
+                const contextoSemPrefixo = contextoSemana.replace(/^oitava\s+/i, 'Oitava ');
+                linha1 = `${dataExtenso} (${diaSemana} da ${contextoSemPrefixo.charAt(0).toLowerCase() + contextoSemPrefixo.slice(1)})`;
+            } else if (diaSemana) {
+                linha1 = `${dataExtenso} (${diaSemana})`;
+            }
+
+            // Linha 2: Solenidade de Santa Maria, Mãe de Deus (ou restante limpo)
+            let linha2 = celebracao;
+            if (!linha2 && textoLimpo) {
+                const semData = textoLimpo
+                    .replace(new RegExp(`^${dia}\\s+de\\s+${nomeMes}\\s+de\\s+${ano}\\.?\\s*`, 'i'), '')
+                    .replace(new RegExp(`^${diaSemana}\\.?\\s*`, 'i'), '')
+                    .replace(/\.+$/, '')
+                    .trim();
+                if (semData && semData.toLowerCase() !== contextoSemana.toLowerCase()) {
+                    linha2 = normalizarTextoCaixa(semData);
+                }
+            }
+
+            return { linha1, linha2 };
+        }
+
         function atualizarEnderecoURL(caminho, paramsObj = {}) {
             const url = new URL(window.location.origin + caminho);
             for (const [k, v] of Object.entries(paramsObj)) {
@@ -825,19 +923,26 @@
 
                 if (data && data.length > 0) {
                     const item = data[0];
-                    const tempoLit = item.tempo_liturgico || item.titulo_liturgico || `${dataFormatada}`;
-                    const refEv = item.referencia_evangelho || '';
+                    const tempoBruto = item.tempo_liturgico || item.titulo_liturgico || '';
+                    const { linha1, linha2 } = formatarCabecalhoLiturgico(tempoBruto, ano, mes, dia);
+                    const refEv = normalizarTextoCaixa(item.referencia_evangelho || '');
                     const textoEv = item.texto_evangelho || item.texto_evangelho_html || '';
-                    const autorH = item.autor_homilia || '';
-                    const fonteH = item.fonte_homilia || '';
+                    const autorH = normalizarTextoCaixa(item.autor_homilia || '');
+                    const fonteH = normalizarTextoCaixa(item.fonte_homilia || '');
                     const homiliaH = item.homilia || item.homilia_html || '';
 
                     document.title = `Evangelho do Dia (${dataFormatada}) — Escritura & Tradição`;
 
-                    let htmlSaida = `<div class="evangelho-tempo">${tempoLit}</div>`;
+                    let htmlSaida = `<div class="evangelho-cabecalho">`;
+                    htmlSaida += `<div class="evangelho-tempo">${linha1}</div>`;
+                    if (linha2) {
+                        htmlSaida += `<div class="evangelho-festa">${linha2}</div>`;
+                    }
                     if (refEv) {
                         htmlSaida += `<div class="evangelho-ref">${refEv}</div>`;
                     }
+                    htmlSaida += `</div>`;
+
                     if (textoEv) {
                         htmlSaida += `<div>${textoEv}</div>`;
                     }
