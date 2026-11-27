@@ -442,6 +442,7 @@
                         <div class="sacred-image-box">
                             <img id="display-image" src="" alt="Arte Sagrada" onerror="this.parentElement.parentElement.style.display='none';">
                         </div>
+                        <div class="sacred-caption" id="display-image-caption" style="display:none;"></div>
                     </div>
 
                     <div class="main-text" id="display-text">
@@ -861,23 +862,34 @@
                 if (data && data.length > 0) {
                     const cap = data[0];
                     const nomeLivroExibicao = document.getElementById('book-select').options[document.getElementById('book-select').selectedIndex].text;
-                    document.getElementById('display-title').textContent = cap.titulo_capitulo || cap.titulo || `${nomeLivroExibicao} ${chapter}`;
+                    document.getElementById('display-title').textContent = cap.titulo_capitulo || `${nomeLivroExibicao} ${chapter}`;
                     document.title = `${document.getElementById('display-title').textContent} — Escritura & Tradição`;
 
+                    const captionEl = document.getElementById('display-image-caption');
                     if (cap.imagem_url && cap.imagem_url.trim() !== "") {
                         document.getElementById('display-image').src = cap.imagem_url.trim();
+                        if (cap.imagem_legenda && cap.imagem_legenda.trim() !== "") {
+                            captionEl.textContent = cap.imagem_legenda.trim();
+                            captionEl.style.display = 'block';
+                        } else {
+                            captionEl.textContent = '';
+                            captionEl.style.display = 'none';
+                        }
                         document.getElementById('image-frame').style.display = 'flex';
                     } else {
+                        captionEl.textContent = '';
+                        captionEl.style.display = 'none';
                         document.getElementById('image-frame').style.display = 'none';
                     }
 
-                    document.getElementById('display-text').innerHTML = cap.texto_html || cap.texto_capitulo || cap.texto || '<p class="loading-text">Capítulo sem conteúdo.</p>';
-                    document.getElementById('text-comentario').innerHTML = cap.comentario_teologico || cap.comentario || '<p>Comentário em breve.</p>';
-                    document.getElementById('text-geografia').innerHTML = cap.notas_geografia || cap.geografia || '<p>Notas em breve.</p>';
-                    document.getElementById('text-reflexao').innerHTML = cap.exame_reflexao || cap.reflexao || '<p>Reflexão em breve.</p>';
+                    document.getElementById('display-text').innerHTML = cap.texto_biblico || '<p class="loading-text">Capítulo sem conteúdo.</p>';
+                    document.getElementById('text-comentario').innerHTML = cap.comentario_completo || '<p>Comentário em breve.</p>';
+                    document.getElementById('text-geografia').innerHTML = cap.curiosidades_geografia || '<p>Notas em breve.</p>';
+                    document.getElementById('text-reflexao').innerHTML = cap.reflexao_perguntas || '<p>Reflexão em breve.</p>';
                 } else {
                     const nomeLivroExibicao = document.getElementById('book-select').options[document.getElementById('book-select').selectedIndex].text;
                     document.getElementById('display-title').textContent = `${nomeLivroExibicao} ${chapter}`;
+                    document.getElementById('display-image-caption').style.display = 'none';
                     document.getElementById('image-frame').style.display = 'none';
                     document.getElementById('display-text').innerHTML = '<p class="loading-text">Este capítulo ainda não foi cadastrado no banco.</p>';
                     document.getElementById('text-comentario').innerHTML = '<p>Sem comentário disponível.</p>';
