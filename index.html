@@ -106,21 +106,21 @@
         .pager-nav {
             display: flex;
             align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .step-btn {
             background: #FFF;
             border: 1px solid var(--accent-gold);
-            padding: 8px 14px;
+            padding: 6px 12px;
             font-family: 'Cinzel', serif;
-            font-size: 0.88rem;
+            font-size: 1rem;
             font-weight: bold;
             color: var(--primary-burgundy);
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s;
+            line-height: 1.2;
         }
 
         .step-btn:hover {
@@ -429,8 +429,8 @@
                     <select id="chapter-select" onchange="fetchChapterFromSupabase()"></select>
                 </div>
                 <div class="pager-nav">
-                    <button type="button" class="step-btn" onclick="navegarEscritura(-1)">← Anterior</button>
-                    <button type="button" class="step-btn" onclick="navegarEscritura(1)">Próximo →</button>
+                    <button type="button" class="step-btn" onclick="navegarEscritura(-1)">←</button>
+                    <button type="button" class="step-btn" onclick="navegarEscritura(1)">→</button>
                 </div>
             </div>
 
@@ -485,8 +485,8 @@
                     <input type="date" id="date-santo" onchange="fetchSantoFromSupabase()">
                 </div>
                 <div class="pager-nav">
-                    <button type="button" class="step-btn" onclick="navegarSanto(-1)">← Dia Anterior</button>
-                    <button type="button" class="step-btn" onclick="navegarSanto(1)">Próximo Dia →</button>
+                    <button type="button" class="step-btn" onclick="navegarSanto(-1)">←</button>
+                    <button type="button" class="step-btn" onclick="navegarSanto(1)">→</button>
                 </div>
                 <button class="tab-btn" onclick="setTodaySanto()">Ir para Hoje</button>
             </div>
@@ -538,8 +538,8 @@
                     <input type="date" id="date-evangelho" onchange="fetchEvangelhoFromSupabase()">
                 </div>
                 <div class="pager-nav">
-                    <button type="button" class="step-btn" onclick="navegarEvangelho(-1)">← Dia Anterior</button>
-                    <button type="button" class="step-btn" onclick="navegarEvangelho(1)">Próximo Dia →</button>
+                    <button type="button" class="step-btn" onclick="navegarEvangelho(-1)">←</button>
+                    <button type="button" class="step-btn" onclick="navegarEvangelho(1)">→</button>
                 </div>
                 <button class="tab-btn" onclick="setTodayEvangelho()">Ir para Hoje</button>
             </div>
