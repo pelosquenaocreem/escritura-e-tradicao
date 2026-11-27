@@ -853,7 +853,7 @@
             document.getElementById('display-text').innerHTML = '<p class="loading-text">Carregando capítulo...</p>';
 
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/capitulos_biblia?livro=eq.${encodeURIComponent(book)}&capitulo=eq.${encodeURIComponent(chapter)}&select=*`, {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/capitulos?livro=eq.${encodeURIComponent(book)}&capitulo=eq.${encodeURIComponent(chapter)}&select=*`, {
                     headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
                 });
                 const data = await response.json();
@@ -861,7 +861,7 @@
                 if (data && data.length > 0) {
                     const cap = data[0];
                     const nomeLivroExibicao = document.getElementById('book-select').options[document.getElementById('book-select').selectedIndex].text;
-                    document.getElementById('display-title').textContent = cap.titulo || `${nomeLivroExibicao} ${chapter}`;
+                    document.getElementById('display-title').textContent = cap.titulo_capitulo || cap.titulo || `${nomeLivroExibicao} ${chapter}`;
                     document.title = `${document.getElementById('display-title').textContent} — Escritura & Tradição`;
 
                     if (cap.imagem_url && cap.imagem_url.trim() !== "") {
@@ -871,7 +871,7 @@
                         document.getElementById('image-frame').style.display = 'none';
                     }
 
-                    document.getElementById('display-text').innerHTML = cap.texto_html || cap.texto || '<p class="loading-text">Capítulo sem conteúdo.</p>';
+                    document.getElementById('display-text').innerHTML = cap.texto_html || cap.texto_capitulo || cap.texto || '<p class="loading-text">Capítulo sem conteúdo.</p>';
                     document.getElementById('text-comentario').innerHTML = cap.comentario_teologico || cap.comentario || '<p>Comentário em breve.</p>';
                     document.getElementById('text-geografia').innerHTML = cap.notas_geografia || cap.geografia || '<p>Notas em breve.</p>';
                     document.getElementById('text-reflexao').innerHTML = cap.exame_reflexao || cap.reflexao || '<p>Reflexão em breve.</p>';
