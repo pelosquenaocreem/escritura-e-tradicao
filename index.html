@@ -165,6 +165,44 @@
             font-size: 1.8rem;
             margin-bottom: 25px;
         }
+
+        .evangelho-tempo {
+            font-family: 'Cinzel', serif;
+            color: var(--primary-burgundy);
+            font-size: 1.15rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .evangelho-ref {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-gold);
+            font-size: 1.05rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .evangelho-separador {
+            border: 0;
+            border-top: 1px solid var(--border-color);
+            margin: 28px 0;
+        }
+
+        .homilia-autor {
+            font-family: 'Cinzel', serif;
+            color: var(--primary-burgundy);
+            font-size: 1.15rem;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .homilia-fonte {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 18px;
+        }
         
         /* MOLDURA ÚNICA PADRONIZADA COM LEGENDA AJUSTÁVEL */
         .sacred-image-frame {
@@ -549,7 +587,7 @@
                 <article class="content-card">
                     <h2 class="section-title" id="evangelho-title">🕊️ Evangelho do Dia</h2>
                     <div class="main-text" id="evangelho-texto">
-                        <p class="loading-text">A seção do Evangelho do Dia e Liturgia Diária estará disponível em breve!</p>
+                        <p class="loading-text">Carregando Evangelho do Dia...</p>
                     </div>
                 </article>
             </main>
@@ -611,8 +649,9 @@
                 const dataEv = document.getElementById('date-evangelho').value;
                 if (!dataEv) {
                     setTodayEvangelho(atualizarUrl);
-                } else if (atualizarUrl) {
-                    atualizarEnderecoURL('/evangelho', { data: dataEv });
+                } else {
+                    if (atualizarUrl) atualizarEnderecoURL('/evangelho', { data: dataEv });
+                    fetchEvangelhoFromSupabase(atualizarUrl);
                 }
             } else {
                 document.title = 'Sagrada Escritura — Escritura & Tradição';
@@ -770,9 +809,58 @@
             }
 
             const parts = dateInput.split('-');
-            const dataFormatada = `${parts[2]}/${parts[1]}/${parts[0]}`;
-            document.getElementById('evangelho-title').textContent = `🕊️ Evangelho do Dia — ${dataFormatada}`;
-            document.getElementById('evangelho-texto').innerHTML = '<p class="loading-text">A seção do Evangelho do Dia e Liturgia Diária estará disponível em breve!</p>';
+            const ano = parseInt(parts[0], 10);
+            const mes = parseInt(parts[1], 10);
+            const dia = parseInt(parts[2], 10);
+            const dataFormatada = `${String(dia).padStart(2, '0')}/${String(mes).padStart(2, '0')}/${ano}`;
+
+            document.getElementById('evangelho-title').textContent = '🕊️ Evangelho do Dia';
+            document.getElementById('evangelho-texto').innerHTML = '<p class="loading-text">Buscando Evangelho e Homilia...</p>';
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/liturgia_diaria?ano=eq.${ano}&mes=eq.${mes}&dia=eq.${dia}&select=*`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                });
+                const data = await response.json();
+
+                if (data && data.length > 0) {
+                    const item = data[0];
+                    const tempoLit = item.tempo_liturgico || item.titulo_liturgico || `${dataFormatada}`;
+                    const refEv = item.referencia_evangelho || '';
+                    const textoEv = item.texto_evangelho || item.texto_evangelho_html || '';
+                    const autorH = item.autor_homilia || '';
+                    const fonteH = item.fonte_homilia || '';
+                    const homiliaH = item.homilia || item.homilia_html || '';
+
+                    document.title = `Evangelho do Dia (${dataFormatada}) — Escritura & Tradição`;
+
+                    let htmlSaida = `<div class="evangelho-tempo">${tempoLit}</div>`;
+                    if (refEv) {
+                        htmlSaida += `<div class="evangelho-ref">${refEv}</div>`;
+                    }
+                    if (textoEv) {
+                        htmlSaida += `<div>${textoEv}</div>`;
+                    }
+
+                    if (autorH || fonteH || homiliaH) {
+                        htmlSaida += `<hr class="evangelho-separador">`;
+                        if (autorH) htmlSaida += `<div class="homilia-autor">${autorH}</div>`;
+                        if (fonteH) htmlSaida += `<div class="homilia-fonte">${fonteH}</div>`;
+                        if (homiliaH) htmlSaida += `<div>${homiliaH}</div>`;
+                    }
+
+                    if (!textoEv && !homiliaH && item.conteudo_completo) {
+                        htmlSaida = `<div>${item.conteudo_completo}</div>`;
+                    }
+
+                    document.getElementById('evangelho-texto').innerHTML = htmlSaida;
+                } else {
+                    document.getElementById('evangelho-texto').innerHTML = `<p class="loading-text">Ainda não há Evangelho cadastrado para ${dataFormatada}.</p>`;
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('evangelho-texto').innerHTML = '<p class="loading-text">Erro ao carregar o Evangelho do Dia.</p>';
+            }
         }
 
         const bookChapters = {
