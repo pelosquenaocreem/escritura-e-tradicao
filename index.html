@@ -84,6 +84,7 @@
         .controls-bar {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 15px;
             margin-bottom: 15px;
             background: var(--bg-card);
@@ -100,6 +101,32 @@
             font-family: 'Cinzel', serif;
             color: var(--primary-burgundy);
             font-weight: bold;
+        }
+
+        .pager-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .step-btn {
+            background: #FFF;
+            border: 1px solid var(--accent-gold);
+            padding: 8px 14px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.88rem;
+            font-weight: bold;
+            color: var(--primary-burgundy);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .step-btn:hover {
+            background: var(--primary-burgundy);
+            color: #FFF;
+            border-color: var(--primary-burgundy);
         }
 
         select, input[type="date"] {
@@ -401,6 +428,10 @@
                     <label for="chapter-select">CAPÍTULO:</label>
                     <select id="chapter-select" onchange="fetchChapterFromSupabase()"></select>
                 </div>
+                <div class="pager-nav">
+                    <button type="button" class="step-btn" onclick="navegarEscritura(-1)">← Anterior</button>
+                    <button type="button" class="step-btn" onclick="navegarEscritura(1)">Próximo →</button>
+                </div>
             </div>
 
             <main>
@@ -453,6 +484,10 @@
                     <label for="date-santo">DATA:</label>
                     <input type="date" id="date-santo" onchange="fetchSantoFromSupabase()">
                 </div>
+                <div class="pager-nav">
+                    <button type="button" class="step-btn" onclick="navegarSanto(-1)">← Dia Anterior</button>
+                    <button type="button" class="step-btn" onclick="navegarSanto(1)">Próximo Dia →</button>
+                </div>
                 <button class="tab-btn" onclick="setTodaySanto()">Ir para Hoje</button>
             </div>
 
@@ -497,10 +532,22 @@
              SEÇÃO 3: EVANGELHO DO DIA
              ============================================== -->
         <div id="app-evangelho" class="app-view">
+            <div class="controls-bar">
+                <div class="selector-group">
+                    <label for="date-evangelho">DATA:</label>
+                    <input type="date" id="date-evangelho" onchange="fetchEvangelhoFromSupabase()">
+                </div>
+                <div class="pager-nav">
+                    <button type="button" class="step-btn" onclick="navegarEvangelho(-1)">← Dia Anterior</button>
+                    <button type="button" class="step-btn" onclick="navegarEvangelho(1)">Próximo Dia →</button>
+                </div>
+                <button class="tab-btn" onclick="setTodayEvangelho()">Ir para Hoje</button>
+            </div>
+
             <main>
                 <article class="content-card">
-                    <h2 class="section-title">🕊️ Evangelho do Dia</h2>
-                    <div class="main-text">
+                    <h2 class="section-title" id="evangelho-title">🕊️ Evangelho do Dia</h2>
+                    <div class="main-text" id="evangelho-texto">
                         <p class="loading-text">A seção do Evangelho do Dia e Liturgia Diária estará disponível em breve!</p>
                     </div>
                 </article>
@@ -560,7 +607,12 @@
                 }
             } else if (appName === 'evangelho') {
                 document.title = 'Evangelho do Dia — Escritura & Tradição';
-                if (atualizarUrl) atualizarEnderecoURL('/evangelho');
+                const dataEv = document.getElementById('date-evangelho').value;
+                if (!dataEv) {
+                    setTodayEvangelho(atualizarUrl);
+                } else if (atualizarUrl) {
+                    atualizarEnderecoURL('/evangelho', { data: dataEv });
+                }
             } else {
                 document.title = 'Sagrada Escritura — Escritura & Tradição';
                 const livro = document.getElementById('book-select').value;
@@ -607,12 +659,34 @@
             evt.currentTarget.classList.add('active');
         }
 
+        function deslocarDataISO(dataISO, deltaDias) {
+            const partes = dataISO ? dataISO.split('-') : [];
+            let dt;
+            if (partes.length === 3) {
+                dt = new Date(Date.UTC(parseInt(partes[0], 10), parseInt(partes[1], 10) - 1, parseInt(partes[2], 10)));
+            } else {
+                const hoje = new Date();
+                dt = new Date(Date.UTC(hoje.getFullYear(), hoje.getMonth(), hoje.getDate()));
+            }
+            dt.setUTCDate(dt.getUTCDate() + deltaDias);
+            const yyyy = dt.getUTCFullYear();
+            const mm = String(dt.getUTCMonth() + 1).padStart(2, '0');
+            const dd = String(dt.getUTCDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
         function setTodaySanto() {
             const today = new Date();
             const yyyy = today.getFullYear();
             const mm = String(today.getMonth() + 1).padStart(2, '0');
             const dd = String(today.getDate()).padStart(2, '0');
             document.getElementById('date-santo').value = `${yyyy}-${mm}-${dd}`;
+            fetchSantoFromSupabase();
+        }
+
+        function navegarSanto(deltaDias) {
+            const inputData = document.getElementById('date-santo');
+            inputData.value = deslocarDataISO(inputData.value, deltaDias);
             fetchSantoFromSupabase();
         }
 
@@ -671,6 +745,35 @@
             }
         }
 
+        function setTodayEvangelho(atualizarUrl = true) {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            document.getElementById('date-evangelho').value = `${yyyy}-${mm}-${dd}`;
+            fetchEvangelhoFromSupabase(atualizarUrl);
+        }
+
+        function navegarEvangelho(deltaDias) {
+            const inputData = document.getElementById('date-evangelho');
+            inputData.value = deslocarDataISO(inputData.value, deltaDias);
+            fetchEvangelhoFromSupabase(true);
+        }
+
+        async function fetchEvangelhoFromSupabase(atualizarUrl = true) {
+            const dateInput = document.getElementById('date-evangelho').value;
+            if (!dateInput) return;
+
+            if (atualizarUrl) {
+                atualizarEnderecoURL('/evangelho', { data: dateInput });
+            }
+
+            const parts = dateInput.split('-');
+            const dataFormatada = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            document.getElementById('evangelho-title').textContent = `🕊️ Evangelho do Dia — ${dataFormatada}`;
+            document.getElementById('evangelho-texto').innerHTML = '<p class="loading-text">A seção do Evangelho do Dia e Liturgia Diária estará disponível em breve!</p>';
+        }
+
         const bookChapters = {
             'genesis': 50, 'exodo': 40, 'levitico': 27, 'numeros': 36, 'deuteronomio': 34,
             'josue': 24, 'juizes': 21, 'rute': 4, '1samuel': 31, '2samuel': 24,
@@ -688,6 +791,38 @@
             'tiago': 5, '1pedro': 5, '2pedro': 3, '1joao': 5, '2joao': 1, '3joao': 1,
             'judas': 1, 'apocalipse': 22
         };
+
+        const ordemLivros = Object.keys(bookChapters);
+
+        function navegarEscritura(deltaCap) {
+            const bookSelect = document.getElementById('book-select');
+            const chapterSelect = document.getElementById('chapter-select');
+            const livroAtual = bookSelect.value;
+            const capAtual = parseInt(chapterSelect.value, 10) || 1;
+            const totalCapsAtual = bookChapters[livroAtual] || 1;
+            const idxLivro = ordemLivros.indexOf(livroAtual);
+
+            const novoCap = capAtual + deltaCap;
+            if (novoCap >= 1 && novoCap <= totalCapsAtual) {
+                chapterSelect.value = String(novoCap);
+                fetchChapterFromSupabase();
+                return;
+            }
+
+            if (novoCap > totalCapsAtual && idxLivro < ordemLivros.length - 1) {
+                const proximoLivro = ordemLivros[idxLivro + 1];
+                bookSelect.value = proximoLivro;
+                updateChapterOptions(1);
+                return;
+            }
+
+            if (novoCap < 1 && idxLivro > 0) {
+                const livroAnterior = ordemLivros[idxLivro - 1];
+                const ultimoCapAnterior = bookChapters[livroAnterior] || 1;
+                bookSelect.value = livroAnterior;
+                updateChapterOptions(ultimoCapAnterior);
+            }
+        }
         
         function updateChapterOptions(capituloInicial = 1) {
             const bookSelect = document.getElementById('book-select').value;
@@ -715,64 +850,89 @@
             }
 
             document.getElementById('display-title').textContent = 'Carregando...';
+            document.getElementById('display-text').innerHTML = '<p class="loading-text">Carregando capítulo...</p>';
 
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/capitulos?livro=eq.${book}&capitulo=eq.${chapter}&select=*`, {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/capitulos_biblia?livro=eq.${encodeURIComponent(book)}&capitulo=eq.${encodeURIComponent(chapter)}&select=*`, {
                     headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
                 });
                 const data = await response.json();
 
                 if (data && data.length > 0) {
                     const cap = data[0];
-                    document.getElementById('display-title').textContent = cap.titulo_capitulo;
-                    document.title = `${cap.titulo_capitulo} — Escritura & Tradição`;
-                    document.getElementById('display-text').innerHTML = cap.texto_biblico;
-                    
+                    const nomeLivroExibicao = document.getElementById('book-select').options[document.getElementById('book-select').selectedIndex].text;
+                    document.getElementById('display-title').textContent = cap.titulo || `${nomeLivroExibicao} ${chapter}`;
+                    document.title = `${document.getElementById('display-title').textContent} — Escritura & Tradição`;
+
                     if (cap.imagem_url && cap.imagem_url.trim() !== "") {
-                        document.getElementById('display-image').src = cap.imagem_url;
+                        document.getElementById('display-image').src = cap.imagem_url.trim();
                         document.getElementById('image-frame').style.display = 'flex';
                     } else {
                         document.getElementById('image-frame').style.display = 'none';
                     }
 
-                    document.getElementById('text-comentario').innerHTML = cap.comentario_completo;
-                    document.getElementById('text-geografia').innerHTML = cap.curiosidades_geografia || '<p>Sem notas.</p>';
-                    document.getElementById('text-reflexao').innerHTML = cap.reflexao_perguntas;
+                    document.getElementById('display-text').innerHTML = cap.texto_html || cap.texto || '<p class="loading-text">Capítulo sem conteúdo.</p>';
+                    document.getElementById('text-comentario').innerHTML = cap.comentario_teologico || cap.comentario || '<p>Comentário em breve.</p>';
+                    document.getElementById('text-geografia').innerHTML = cap.notas_geografia || cap.geografia || '<p>Notas em breve.</p>';
+                    document.getElementById('text-reflexao').innerHTML = cap.exame_reflexao || cap.reflexao || '<p>Reflexão em breve.</p>';
                 } else {
-                    document.getElementById('display-title').textContent = `Capítulo ${chapter}`;
-                    document.getElementById('display-text').innerHTML = '<p class="loading-text">Capítulo não encontrado.</p>';
+                    const nomeLivroExibicao = document.getElementById('book-select').options[document.getElementById('book-select').selectedIndex].text;
+                    document.getElementById('display-title').textContent = `${nomeLivroExibicao} ${chapter}`;
                     document.getElementById('image-frame').style.display = 'none';
+                    document.getElementById('display-text').innerHTML = '<p class="loading-text">Este capítulo ainda não foi cadastrado no banco.</p>';
+                    document.getElementById('text-comentario').innerHTML = '<p>Sem comentário disponível.</p>';
+                    document.getElementById('text-geografia').innerHTML = '<p>Sem notas disponíveis.</p>';
+                    document.getElementById('text-reflexao').innerHTML = '<p>Sem reflexão disponível.</p>';
                 }
             } catch (error) {
-                console.error('Erro de conexão:', error);
-                document.getElementById('display-title').textContent = 'Erro de Conexão com o Banco';
+                console.error('Erro:', error);
+                document.getElementById('display-title').textContent = 'Erro de Conexão';
+                document.getElementById('display-text').innerHTML = '<p class="loading-text">Não foi possível carregar o capítulo agora.</p>';
             }
         }
 
-        window.onload = function() {
-            const path = window.location.pathname.toLowerCase();
-            const params = new URLSearchParams(window.location.search);
+        document.addEventListener('keydown', function(e) {
+            const tag = e.target && e.target.tagName ? e.target.tagName.toLowerCase() : '';
+            if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
+            if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
 
-            if (path.startsWith('/santo')) {
-                const dataParam = params.get('data');
-                if (dataParam) {
-                    document.getElementById('date-santo').value = dataParam;
-                    switchApp('santo', false);
-                    fetchSantoFromSupabase();
-                } else {
-                    switchApp('santo', false);
-                }
-            } else if (path.startsWith('/evangelho')) {
+            const delta = e.key === 'ArrowLeft' ? -1 : 1;
+            if (document.getElementById('app-santo').classList.contains('active')) {
+                navegarSanto(delta);
+            } else if (document.getElementById('app-evangelho').classList.contains('active')) {
+                navegarEvangelho(delta);
+            } else {
+                navegarEscritura(delta);
+            }
+        });
+
+        (function initApp() {
+            const params = new URLSearchParams(window.location.search);
+            const path = window.location.pathname.toLowerCase();
+
+            const livroParam = params.get('livro');
+            const capParam = parseInt(params.get('cap'), 10) || 1;
+            if (livroParam && bookChapters[livroParam]) {
+                document.getElementById('book-select').value = livroParam;
+            }
+            const totalCapLivro = bookChapters[document.getElementById('book-select').value] || 1;
+            updateChapterOptions(Math.min(Math.max(capParam, 1), totalCapLivro));
+
+            const dataParam = params.get('data');
+            if (dataParam) {
+                document.getElementById('date-santo').value = dataParam;
+                document.getElementById('date-evangelho').value = dataParam;
+            }
+
+            if (path.includes('santo') || params.get('secao') === 'santo') {
+                switchApp('santo', false);
+                if (dataParam) fetchSantoFromSupabase();
+            } else if (path.includes('evangelho') || params.get('secao') === 'evangelho') {
                 switchApp('evangelho', false);
             } else {
-                const livroParam = params.get('livro');
-                const capParam = parseInt(params.get('cap'), 10) || 1;
-                if (livroParam && bookChapters[livroParam]) {
-                    document.getElementById('book-select').value = livroParam;
-                }
-                updateChapterOptions(capParam);
+                switchApp('escritura', false);
             }
-        };
+        })();
     </script>
 </body>
 </html>
